@@ -16,7 +16,7 @@ export default function HomePage() {
     canvas.height = window.innerHeight
 
     // Initialize particles
-    particles.current = Array.from({ length: 5000}, () => ({
+    particles.current = Array.from({ length: 200}, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       size: Math.random() * 3 + 1,
