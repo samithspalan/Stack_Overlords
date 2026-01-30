@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useTheme } from '../context/ThemeContext'
 import { authService } from '../services/authService'
 
-export default function FarmerSignup({ onNavigate }) {
+export default function FarmerSignup({ onNavigate, onSignupSuccess }) {
   const { isDark, toggleTheme } = useTheme()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -47,7 +47,7 @@ export default function FarmerSignup({ onNavigate }) {
         setConfirmPassword('')
         setAgreed(false)
         setTimeout(() => {
-          onNavigate('farmer-login')
+          onSignupSuccess ? onSignupSuccess() : onNavigate('farmer-login')
         }, 1500)
       } else {
         setError(result.message || 'Signup failed')
@@ -61,7 +61,7 @@ export default function FarmerSignup({ onNavigate }) {
   }
 
   return (
-    <div className={`min-h-screen flex items-center justify-center py-8 transition-colors duration-300 ${
+    <div className={`min-h-screen flex items-center justify-center py-6 px-4 transition-colors duration-300 ${
       isDark ? 'bg-slate-900' : 'bg-linear-to-br from-green-50 via-white to-green-50'
     }`}>
       <div className="fixed top-6 left-6 z-50 flex items-center gap-2">
@@ -89,10 +89,22 @@ export default function FarmerSignup({ onNavigate }) {
         </button>
       </div>
 
-      <div className="w-full max-w-md px-4">
-        <div className={`rounded-3xl shadow-2xl border p-6 w-full transition-colors duration-300 ${
-          isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-green-100'
-        }`}>
+      <div className="w-full max-w-lg px-4">
+        <div className={`rounded-3xl shadow-2xl border-2 p-6 w-full transition-colors duration-300 relative ${
+          isDark
+            ? 'bg-slate-800 border-slate-700'
+            : 'bg-white border-green-500'
+        }`}
+        style={{
+          animation: isDark ? 'none' : 'greenGlow 2s ease-in-out infinite',
+          boxShadow: `0 0 30px ${isDark ? 'rgba(34, 197, 94, 0.1)' : 'rgba(34, 197, 94, 0.4)'}`
+        }}>
+          <style>{`
+            @keyframes greenGlow {
+              0%, 100% { border-color: rgb(34, 197, 94); box-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
+              50% { border-color: rgb(16, 185, 129); box-shadow: 0 0 40px rgba(34, 197, 94, 0.6); }
+            }
+          `}</style>
           <div className="text-center mb-4">
             <div className="w-12 h-12 bg-linear-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-2">
               <Sprout className="w-6 h-6 text-white" />

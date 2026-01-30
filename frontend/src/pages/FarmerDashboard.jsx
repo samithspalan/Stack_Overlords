@@ -366,7 +366,7 @@ export default function FarmerDashboard({ onNavigate }) {
               <button 
                 key={item.id}
                 onClick={() => {
-                  if (item.id === 'market-prices' && onNavigate) {
+                  if ((item.id === 'market-prices' || item.id === 'buyers') && onNavigate) {
                     onNavigate('market-analysis')
                   } else {
                     setActiveLink(item.id)
@@ -446,13 +446,13 @@ export default function FarmerDashboard({ onNavigate }) {
           </p>
           <div className="flex flex-wrap gap-4">
             <button 
-              onClick={() => document.getElementById('market-prices').scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => onNavigate('market-analysis')}
               className="bg-emerald-500 hover:bg-emerald-400 text-white px-8 py-4 rounded-xl font-bold transition-all shadow-lg shadow-emerald-900/20 hover:shadow-emerald-500/30 flex items-center gap-2"
             >
               <IndianRupee className="w-5 h-5" /> Check Prices
             </button>
             <button 
-               onClick={() => document.getElementById('buyers').scrollIntoView({ behavior: 'smooth' })}
+               onClick={() => onNavigate('market-analysis')}
                className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-xl font-bold transition-all flex items-center gap-2"
             >
               <Handshake className="w-5 h-5" /> Find Buyers

@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useTheme } from '../context/ThemeContext'
 import { authService } from '../services/authService'
 
-export default function FarmerLogin({ onNavigate }) {
+export default function FarmerLogin({ onNavigate, onLoginSuccess }) {
   const { isDark, toggleTheme } = useTheme()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -19,7 +19,7 @@ export default function FarmerLogin({ onNavigate }) {
       if (result.user) {
         console.log('Google Login Success:', result.user)
         // Navigate to dashboard after success
-        onNavigate('farmer-dashboard')
+        onLoginSuccess ? onLoginSuccess() : onNavigate('farmer-dashboard')
       }
     } catch (error) {
       console.error('Google Login Error:', error)
@@ -56,7 +56,7 @@ export default function FarmerLogin({ onNavigate }) {
         setEmail('')
         setPassword('')
         // Navigate to farmer dashboard
-        onNavigate('farmer-dashboard')
+        onLoginSuccess ? onLoginSuccess() : onNavigate('farmer-dashboard')
       } else {
         setError(result.message || 'Login failed')
       }
@@ -69,7 +69,7 @@ export default function FarmerLogin({ onNavigate }) {
   }
 
   return (
-    <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
+    <div className={`min-h-screen flex items-center justify-center py-6 px-4 transition-colors duration-300 ${
       isDark 
         ? 'bg-slate-900' 
         : 'bg-linear-to-br from-green-50 via-white to-green-50'
@@ -102,26 +102,36 @@ export default function FarmerLogin({ onNavigate }) {
       </div>
 
       {/* Login Container */}
-      <div className="w-full max-w-md px-4">
-        <div className={`rounded-3xl shadow-2xl border p-10 w-full transition-colors duration-300 ${
+      <div className="w-full max-w-lg px-4">
+        <div className={`rounded-3xl shadow-2xl border-2 p-6 w-full transition-colors duration-300 relative ${
           isDark
             ? 'bg-slate-800 border-slate-700'
-            : 'bg-white border-green-100'
-        }`}>
+            : 'bg-white border-green-500'
+        }`}
+        style={{
+          animation: isDark ? 'none' : 'greenGlow 2s ease-in-out infinite',
+          boxShadow: `0 0 30px ${isDark ? 'rgba(34, 197, 94, 0.1)' : 'rgba(34, 197, 94, 0.4)'}`
+        }}>
+          <style>{`
+            @keyframes greenGlow {
+              0%, 100% { border-color: rgb(34, 197, 94); box-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
+              50% { border-color: rgb(16, 185, 129); box-shadow: 0 0 40px rgba(34, 197, 94, 0.6); }
+            }
+          `}</style>
           {/* Header */}
-          <div className="text-center mb-10">
-            <div className="w-16 h-16 bg-linear-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Sprout className="w-8 h-8 text-white" />
+          <div className="text-center mb-6">
+            <div className="w-12 h-12 bg-linear-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Sprout className="w-6 h-6 text-white" />
             </div>
-            <h1 className={`text-3xl font-bold mb-2 ${isDark ? 'text-slate-100' : 'text-gray-900'}`}>Farmer Login</h1>
-            <p className={isDark ? 'text-slate-400' : 'text-gray-600'}>Access your farm dashboard</p>
+            <h1 className={`text-2xl font-bold mb-1 ${isDark ? 'text-slate-100' : 'text-gray-900'}`}>Farmer Login</h1>
+            <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>Access your farm dashboard</p>
           </div>
 
           {/* Login Form */}
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-4">
             {/* Email Input */}
             <div>
-              <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-slate-300' : 'text-gray-700'}`}>
+              <label className={`block text-xs font-medium mb-1 ${isDark ? 'text-slate-300' : 'text-gray-700'}`}>
                 Email Address
               </label>
               <div className="relative">
@@ -213,11 +223,16 @@ export default function FarmerLogin({ onNavigate }) {
           </form>
 
           {/* Signup Link */}
-          <div className="text-center mt-6">
+          <div className="text-center mt-4">
             <p className={isDark ? 'text-slate-400' : 'text-gray-600'}>
               Don't have an account?{' '}
               <button 
-                onClick={() => onNavigate('farmer-signup')}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault()
+                  console.log('Signup button clicked, navigating to farmer-signup')
+                  onNavigate('farmer-signup')
+                }}
                 className={`font-medium hover:underline ${isDark ? 'text-green-400 hover:text-green-300' : 'text-green-600 hover:text-green-700'}`}
               >
                 Sign up here
