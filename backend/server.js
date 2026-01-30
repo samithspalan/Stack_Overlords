@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import { singUp as signUp, login, logout, getUser, googleLogin } from './controller.js/auth.js';
 import isAuthenticated from './middleware/authMiddleware.js';
+import Price from './model/priceModel.js';
 
 dotenv.config();
 
@@ -34,6 +35,21 @@ app.post('/api/auth/google', googleLogin);
 const API_KEY = process.env.API_KEY || "579b464db66ec23bdd00000168192898a7804f5c78598b8f95b641a1";
 const RESOURCE_ID = "9ef84268-d588-465a-a308-a864a43d0070";
 const BASE_URL = `https://api.data.gov.in/resource/${RESOURCE_ID}`;
+
+const ALLOWED_CROPS = [
+  "Tomato",
+  "Onion",
+  "Potato",
+  "Paddy",
+  "Wheat",
+  "Maize",
+  "Coconut",
+  "Arecanut",
+  "Banana",
+  "Chilli",
+  "Groundnut",
+  "Sugarcane"
+];
 
 // Mock Data for Fallback (When API fails/timeouts)
 const MOCK_DATA = [
@@ -134,4 +150,143 @@ app.get('/api/market-prices', async (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+});
+
+// Helper function to get last 5 days dates
+const getLastNDaysDates = (n) => {
+    const dates = [];
+    for (let i = n - 1; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        dates.push(getFormattedDate(date));
+    }
+    return dates;
+};
+
+// Route to fetch and store last 3 days of crop prices in database
+app.post('/api/store-crop-prices', async (req, res) => {
+    try {
+        const lastNDates = getLastNDaysDates(3);
+        console.log("Fetching prices for last 3 days:", lastNDates);
+
+        let allPrices = [];
+        let successCount = 0;
+        let fetchDetails = [];
+
+        // Fetch data for last 3 days
+        for (const date of lastNDates) {
+            try {
+                const params = {
+                    "api-key": API_KEY,
+                    "format": "json",
+                    "limit": 5000,
+                    "filters[arrival_date]": date
+                };
+
+                const response = await axios.get(BASE_URL, { params, timeout: 10000 });
+                if (response.data.records) {
+                    const filteredRecords = response.data.records.filter(record => 
+                        ALLOWED_CROPS.some(crop => 
+                            record.commodity.toLowerCase().includes(crop.toLowerCase()) ||
+                            record.commodity.toLowerCase().replace(/\s+/g, '').includes(crop.toLowerCase())
+                        )
+                    );
+                    
+                    allPrices.push(...filteredRecords);
+                    successCount++;
+                    
+                    const cropBreakdown = {};
+                    filteredRecords.forEach(r => {
+                        cropBreakdown[r.commodity] = (cropBreakdown[r.commodity] || 0) + 1;
+                    });
+                    
+                    fetchDetails.push({
+                        date,
+                        total: filteredRecords.length,
+                        crops: cropBreakdown
+                    });
+                    
+                    console.log(`✅ ${date}: ${filteredRecords.length} records`, cropBreakdown);
+                }
+            } catch (error) {
+                console.error(`❌ Error fetching data for ${date}:`, error.message);
+                fetchDetails.push({ date, error: error.message });
+            }
+        }
+
+        if (allPrices.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'No price data found for allowed crops in the last 3 days',
+                fetchDetails
+            });
+        }
+
+        // Prepare data for database insertion (convert string prices to numbers)
+        const pricesForDB = allPrices.map(price => ({
+            state: price.state,
+            district: price.district,
+            market: price.market,
+            commodity: price.commodity,
+            variety: price.variety || '',
+            modal_price: parseInt(price.modal_price) || 0,
+            min_price: price.min_price ? parseInt(price.min_price) : null,
+            max_price: price.max_price ? parseInt(price.max_price) : null,
+            arrival_date: price.arrival_date,
+            created_at: new Date()
+        }));
+
+        // Clear existing prices and insert new ones
+        await Price.deleteMany({});
+        const insertedPrices = await Price.insertMany(pricesForDB);
+
+        const cropCounts = {};
+        insertedPrices.forEach(p => {
+            cropCounts[p.commodity] = (cropCounts[p.commodity] || 0) + 1;
+        });
+
+        res.json({
+            success: true,
+            message: `Successfully stored ${insertedPrices.length} crop prices for last 3 days`,
+            recordsStored: insertedPrices.length,
+            daysProcessed: successCount,
+            totalDays: 3,
+            cropBreakdown: cropCounts,
+            fetchDetails
+        });
+
+    } catch (error) {
+        console.error("Error storing prices:", error.message);
+        res.status(500).json({
+            success: false,
+            message: 'Error storing crop prices',
+            error: error.message
+        });
+    }
+});
+
+// Route to get stored crop prices from database
+app.get('/api/crop-prices', async (req, res) => {
+    try {
+        const { commodity, district, limit = 100 } = req.query;
+        
+        let query = {};
+        if (commodity) query.commodity = { $regex: commodity, $options: 'i' };
+        if (district) query.district = district;
+
+        const prices = await Price.find(query).limit(parseInt(limit)).sort({ arrival_date: -1 });
+
+        res.json({
+            success: true,
+            count: prices.length,
+            records: prices
+        });
+    } catch (error) {
+        console.error("Error fetching crop prices:", error.message);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching crop prices',
+            error: error.message
+        });
+    }
 });
