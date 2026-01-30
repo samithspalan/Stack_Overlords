@@ -7,7 +7,7 @@ export default function FarmerDashboard() {
   const [selectedCrop, setSelectedCrop] = useState('all')
   const [selectedLocation, setSelectedLocation] = useState('all')
   const [userLocation, setUserLocation] = useState('') // New: User's preferred location
-  const [activeLink, setActiveLink] = useState('market-prices')
+  const [activeLink, setActiveLink] = useState('home')
   const [marketPrices, setMarketPrices] = useState([])
   const [loading, setLoading] = useState(true)
   const [priceUnit, setPriceUnit] = useState('kg') // kg, quintal, ton
@@ -670,16 +670,15 @@ export default function FarmerDashboard() {
                 })}
               </div>
             )}
-
             {/* Empty State */}
             {!loading && filteredPrices.length === 0 && (
                 <div className="col-span-full flex flex-col items-center justify-center py-20 bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-200">
-                        <div className="bg-white p-4 rounded-full shadow-sm mb-4">
-                            <Filter className="h-8 w-8 text-slate-300"/>
-                        </div>
-                        <p className="text-slate-500 font-medium mb-2">No prices found for standard crops.</p>
-                        <button onClick={() => {setSelectedCrop('all'); setSelectedLocation('all')}} className="text-sm text-emerald-600 font-bold hover:text-emerald-700 transition-colors">Clear All Filters</button>
-                    </div>
+                      <div className="bg-white p-4 rounded-full shadow-sm mb-4">
+                          <Filter className="h-8 w-8 text-slate-300"/>
+                      </div>
+                      <p className="text-slate-500 font-medium mb-2">No prices found for standard crops.</p>
+                      <button onClick={() => {setSelectedCrop('all'); setSelectedLocation('all')}} className="text-sm text-emerald-600 font-bold hover:text-emerald-700 transition-colors">Clear All Filters</button>
+                  </div>
             )}
             </div>
           </div>
@@ -733,8 +732,8 @@ export default function FarmerDashboard() {
                  <Tractor className="w-10 h-10" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-slate-800 mb-2 group-hover:text-emerald-700 transition-colors">Farm Management</h3>
-                <p className="text-slate-500 font-medium">Track your crop cycles, expenses, and yield history in one place.</p>
+                <h3 className="text-2xl font-bold text-slate-800 mb-2 group-hover:text-emerald-700 transition-colors">Post Your Produce</h3>
+                <p className="text-slate-500 font-medium">List your crops for sale and reach buyers instantly</p>
               </div>
             </div>
           </div>
@@ -746,8 +745,8 @@ export default function FarmerDashboard() {
                  <Newspaper className="w-10 h-10" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-slate-800 mb-2 group-hover:text-orange-700 transition-colors">Agri-News & Trends</h3>
-                <p className="text-slate-500 font-medium">Daily updates on government schemes, weather, and market forecasts.</p>
+                <h3 className="text-2xl font-bold text-slate-800 mb-2 group-hover:text-orange-700 transition-colors">Market Trends & News</h3>
+                <p className="text-slate-500 font-medium">Stay updated with latest agricultural trends</p>
               </div>
             </div>
           </div>
@@ -755,7 +754,7 @@ export default function FarmerDashboard() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-linear-to-r from-green-700 to-emerald-700 text-white py-6 mt-8">
+      <footer className="bg-gradient-to-r from-green-700 to-emerald-700 text-white py-6 mt-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p>&copy; 2026 KisanSetu. Empowering farmers, one connection at a time.</p>
         </div>
