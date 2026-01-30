@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import { singUp as signUp, login, logout, getUser, googleLogin } from './controller.js/auth.js';
 import isAuthenticated from './middleware/authMiddleware.js';
 import Price from './model/priceModel.js';
+import { analyzeCropPrices, getAllCropsAnalysis } from './services/geminiService.js';
 
 dotenv.config();
 
@@ -286,6 +287,42 @@ app.get('/api/crop-prices', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error fetching crop prices',
+            error: error.message
+        });
+    }
+});
+
+// Gemini AI Routes
+
+// Get AI analysis for a specific crop
+app.get('/api/ai/analyze/:commodity', async (req, res) => {
+    try {
+        const { commodity } = req.params;
+        const analysis = await analyzeCropPrices(commodity);
+        
+        if (analysis.error) {
+            return res.status(404).json({ success: false, error: analysis.error });
+        }
+        
+        res.json({ success: true, data: analysis });
+    } catch (error) {
+        console.error("AI Analysis error:", error.message);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+// Get all crops ranked by demand with AI analysis
+app.get('/api/ai/crop-rankings', async (req, res) => {
+    try {
+        const rankings = await getAllCropsAnalysis();
+        res.json(rankings);
+    } catch (error) {
+        console.error("AI Ranking error:", error.message);
+        res.status(500).json({
+            success: false,
             error: error.message
         });
     }

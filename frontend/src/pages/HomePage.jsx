@@ -18,6 +18,9 @@ export default function HomePage() {
   const canvasRef = useRef(null)
   const mousePos = useRef({ x: 0, y: 0 })
   const particles = useRef([])
+  const [farmers, setFarmers] = useState(0)
+  const [volume, setVolume] = useState(0)
+  const [mandis, setMandis] = useState(0)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -110,6 +113,50 @@ export default function HomePage() {
     }
   }, [])
 
+  // Counter animation effect
+  useEffect(() => {
+    const animateCounter = (setter, target, duration = 2000) => {
+      const start = 0
+      const increment = target / (duration / 16)
+      let current = 0
+
+      const timer = setInterval(() => {
+        current += increment
+        if (current >= target) {
+          setter(target)
+          clearInterval(timer)
+        } else {
+          setter(Math.floor(current))
+        }
+      }, 16)
+
+      return timer
+    }
+
+    const timer1 = animateCounter(setFarmers, 10000, 2000)
+    const timer2 = animateCounter(setVolume, 500, 2000)
+    const timer3 = animateCounter(setMandis, 120, 2000)
+
+    // Loop animation
+    const loopTimer = setInterval(() => {
+      setFarmers(0)
+      setVolume(0)
+      setMandis(0)
+      setTimeout(() => {
+        animateCounter(setFarmers, 10000, 2000)
+        animateCounter(setVolume, 500, 2000)
+        animateCounter(setMandis, 120, 2000)
+      }, 100)
+    }, 4000)
+
+    return () => {
+      clearInterval(timer1)
+      clearInterval(timer2)
+      clearInterval(timer3)
+      clearInterval(loopTimer)
+    }
+  }, [])
+
   return (
     <div className="min-h-screen bg-slate-50 relative overflow-hidden font-sans text-slate-900 selection:bg-emerald-200 selection:text-emerald-900">
       
@@ -176,17 +223,11 @@ export default function HomePage() {
       {/* Hero Section */}
       <section id="home" className="relative pt-20 pb-16 lg:pt-28 lg:pb-24 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-100 rounded-full px-4 py-1.5 mb-8 animate-[fade-in-up_1s_ease-out]">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span className="text-xs font-semibold text-emerald-700 uppercase tracking-wide">Empowering Agriculture</span>
-          </div>
+         
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-slate-900 mb-6 tracking-tight leading-tight">
             Cultivating a <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-600">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-emerald-600 via-teal-500 to-emerald-600">
               Better Future
             </span>
           </h1>
@@ -208,14 +249,16 @@ export default function HomePage() {
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {[
-              { label: 'Active Farmers', value: '10,000+', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
-              { label: 'Weekly Volume', value: '500 Tons', icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-              { label: 'Partner Mandis', value: '120+', icon: Building2, color: 'text-amber-600', bg: 'bg-amber-50' },
+              { label: 'Active Farmers', value: farmers, suffix: '+', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
+              { label: 'Weekly Volume', value: volume, suffix: ' Tons', icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+              { label: 'Partner Mandis', value: mandis, suffix: '+', icon: Building2, color: 'text-amber-600', bg: 'bg-amber-50' },
             ].map((stat, idx) => (
               <div key={idx} className="bg-white rounded-2xl p-8 border border-slate-100 shadow-sm hover:shadow-md transition-all">
                 <div className="flex items-center justify-between pointer-events-none">
                   <div className="text-left">
-                    <p className="text-4xl font-bold text-slate-900 mb-2">{stat.value}</p>
+                    <p className="text-4xl font-bold text-slate-900 mb-2">
+                      {stat.value.toLocaleString()}{stat.suffix}
+                    </p>
                     <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">{stat.label}</p>
                   </div>
                   <div className={`p-4 rounded-2xl ${stat.bg}`}>
@@ -240,7 +283,7 @@ export default function HomePage() {
         </div>
 
         {/* Login Cards Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
+        <div className="grid md:grid-cols-2 gap-10 mb-12 max-w-4xl mx-auto">
           {/* Farmer Card */}
           <a href="#farmer-login" className="group block">
             <div className="h-full bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:scale-105 overflow-hidden">
@@ -259,26 +302,7 @@ export default function HomePage() {
               </div>
             </div>
           </a>
-
-          {/* Admin Card */}
-          <a href="#admin-login" className="group block">
-            <div className="h-full bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:scale-105 overflow-hidden">
-              <div className="bg-linear-to-br from-emerald-400 to-emerald-600 p-8 relative overflow-hidden">
-                <div className="absolute top-0 right-0 -mr-20 -mt-20 w-40 h-40 bg-white opacity-10 rounded-full"></div>
-                <Shield className="w-16 h-16 text-white relative z-10" strokeWidth={1.5} />
-              </div>
-              <div className="p-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">Admin Login</h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  Manage platform, users, and market operations
-                </p>
-                <button className="w-full bg-linear-to-r from-emerald-400 to-emerald-600 hover:from-emerald-500 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300">
-                  Login as Admin
-                </button>
-              </div>
-            </div>
-          </a>
-
+            
           {/* Customer Card */}
           <a href="#customer-login" className="group block">
             <div className="h-full bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:scale-105 overflow-hidden">
@@ -297,19 +321,6 @@ export default function HomePage() {
               </div>
             </div>
           </a>
-        </div>
-
-        {/* CTA Section */}
-        <div className="bg-linear-to-r from-green-50 to-emerald-50 rounded-2xl border border-green-200 p-8 md:p-12 text-center">
-          <h3 className="text-2xl font-bold text-gray-900 mb-3">
-            Don't have an account?
-          </h3>
-          <p className="text-gray-600 mb-6">
-            Create a new account to join our growing community of farmers and customers.
-          </p>
-          <button className="bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300">
-            Sign Up Now
-          </button>
         </div>
       </section>
 
@@ -355,7 +366,7 @@ export default function HomePage() {
               }
             ].map((feature, idx) => (
               <div key={idx} className="flex gap-4 p-6 rounded-2xl hover:bg-white hover:shadow-lg transition-all duration-300 border border-transparent hover:border-slate-100">
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600">
                     <feature.icon className="w-6 h-6" />
                   </div>

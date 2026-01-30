@@ -3,21 +3,21 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import farmerBg from '../assets/farmerdashboard.png'
 
-export default function FarmerDashboard() {
+export default function FarmerDashboard({ onNavigate }) {
   const [selectedCrop, setSelectedCrop] = useState('all')
   const [selectedLocation, setSelectedLocation] = useState('all')
-  const [userLocation, setUserLocation] = useState('') // New: User's preferred location
+  const [userLocation, setUserLocation] = useState('')
   const [activeLink, setActiveLink] = useState('home')
   const [marketPrices, setMarketPrices] = useState([])
   const [loading, setLoading] = useState(true)
-  const [priceUnit, setPriceUnit] = useState('kg') // kg, quintal, ton
-  const [activeCommodity, setActiveCommodity] = useState(null) // State for detailed view
+  const [priceUnit, setPriceUnit] = useState('kg')
+  const [activeCommodity, setActiveCommodity] = useState(null)
 
   // Fetch Data from Backend
   const fetchMarketData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get('http://localhost:8080/api/market-prices?limit=500')
+      const response = await axios.get('http://localhost:5000/api/market-prices?limit=500')
       if (response.data.success) {
         setMarketPrices(response.data.records)
       }
@@ -296,9 +296,13 @@ export default function FarmerDashboard() {
               <button 
                 key={item.id}
                 onClick={() => {
-                  setActiveLink(item.id)
-                  const element = document.getElementById(item.id)
-                  if (element) element.scrollIntoView({ behavior: 'smooth' })
+                  if (item.id === 'market-prices' && onNavigate) {
+                    onNavigate('market-analysis')
+                  } else {
+                    setActiveLink(item.id)
+                    const element = document.getElementById(item.id)
+                    if (element) element.scrollIntoView({ behavior: 'smooth' })
+                  }
                 }}
                 className={`flex items-center gap-2 font-semibold transition-all duration-300 px-5 py-2.5 rounded-xl text-sm ${
                   activeLink === item.id 
@@ -330,7 +334,7 @@ export default function FarmerDashboard() {
         <div className="absolute inset-0 bg-stone-900">
            <img src={farmerBg} className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-[2s] ease-out" alt="Farmer Background" />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/90 via-emerald-900/40 to-transparent"></div>
+        <div className="absolute inset-0 bg-linear-to-r from-emerald-950/90 via-emerald-900/40 to-transparent"></div>
         <div className="relative py-16 px-8 md:px-16 max-w-4xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-100 text-xs font-bold uppercase tracking-widest mb-6 backdrop-blur-md">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -338,7 +342,7 @@ export default function FarmerDashboard() {
           </div>
           <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight tracking-tight">
             Smart Farming Starts with <br/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 to-teal-400">Real-Time Decisions</span>
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-emerald-200 to-teal-400">Real-Time Decisions</span>
           </h2>
           <p className="text-lg text-emerald-100/80 mb-10 max-w-xl leading-relaxed">
             Instantly access Mandi prices, connect with verified buyers, and maximize your harvest's value with AI-driven insights.
@@ -364,7 +368,7 @@ export default function FarmerDashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Weather Card */}
-            <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl p-6 text-white shadow-lg shadow-blue-500/20 relative overflow-hidden group">
+            <div className="bg-linear-to-br from-blue-500 to-blue-600 rounded-3xl p-6 text-white shadow-lg shadow-blue-500/20 relative overflow-hidden group">
                <div className="relative z-10">
                  <div className="flex justify-between items-start mb-4">
                     <div className="bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
@@ -517,7 +521,7 @@ export default function FarmerDashboard() {
             </div>
 
             {/* Cards Grid - 3 Column Layout */}
-            <div className="h-[800px] overflow-y-auto pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-emerald-200 hover:scrollbar-thumb-emerald-300 transition-colors">
+            <div className="h-200 overflow-y-auto pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-emerald-200 hover:scrollbar-thumb-emerald-300 transition-colors">
             {loading ? (
                 <div className="py-32 text-center">
                     <div className="relative w-16 h-16 mx-auto mb-6">
@@ -625,7 +629,7 @@ export default function FarmerDashboard() {
                             e.target.src = 'https://placehold.co/600x400?text=No+Image'; 
                           }}
                         />
-                         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent"></div>
+                         <div className="absolute inset-0 bg-linear-to-t from-slate-900/90 via-slate-900/20 to-transparent"></div>
                          
                          {/* Overlay Content */}
                          <div className="absolute bottom-0 left-0 p-6 w-full">
@@ -696,7 +700,7 @@ export default function FarmerDashboard() {
                 ))}
               </div>
               
-              <div className="mt-6 p-4 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl text-white text-center">
+              <div className="mt-6 p-4 bg-linear-to-br from-emerald-500 to-teal-600 rounded-2xl text-white text-center">
                   <p className="font-bold mb-2">Want to sell directly?</p>
                   <button className="w-full bg-white text-emerald-600 font-bold py-3 rounded-xl hover:bg-emerald-50 transition shadow-lg shadow-emerald-900/20">
                     List Your Produce
@@ -737,7 +741,7 @@ export default function FarmerDashboard() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-r from-green-700 to-emerald-700 text-white py-6 mt-8">
+      <footer className="bg-linear-to-r from-green-700 to-emerald-700 text-white py-6 mt-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p>&copy; 2026 KisanSetu. Empowering farmers, one connection at a time.</p>
         </div>

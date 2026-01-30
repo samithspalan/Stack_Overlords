@@ -1,14 +1,18 @@
 import { Sprout, Linkedin, Github, Leaf } from 'lucide-react'
 import { useState } from 'react'
+import profile1 from '../assets/profile1.jpeg'
+import profile2 from '../assets/profile2.jpg'
+import profile3 from '../assets/profile3.jpeg'
+import profile4 from '../assets/profile4.jpeg'
 
 export default function AboutPage() {
   const [activeLink, setActiveLink] = useState('about')
 
   const teamMembers = [
-    { id: 1, name: 'Harikishan alva b', role: 'Team Member', linkedin: 'https://www.linkedin.com/in/harikishan-alva-b-2163a5293/', github: 'https://github.com/HARIKISHAN-ALVA-B' },
-    { id: 2, name: 'samith s palan', role: 'Team Member', linkedin: 'https://www.linkedin.com/in/samith-s-palan-695868291', github: 'https://github.com/samithspalan' },
-    { id: 3, name: 'Akshay', role: 'Team Member', linkedin: 'https://www.linkedin.com/in/akshay-kumar-738245293', github: 'https://github.com/akshay123kumar-coder' },
-    { id: 4, name: 'Nisith SK', role: 'Team Member', linkedin: 'https://www.linkedin.com/in/nishit-s-k-441141293?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app', github: 'https://github.com/NishitSK' },
+    { id: 1, name: 'Harikishan alva b', role: 'Team Member', linkedin: 'https://www.linkedin.com/in/harikishan-alva-b-2163a5293/', github: 'https://github.com/HARIKISHAN-ALVA-B', image: profile1 },
+    { id: 2, name: 'samith s palan', role: 'Team Member', linkedin: 'https://www.linkedin.com/in/samith-s-palan-695868291', github: 'https://github.com/samithspalan', image: profile2 },
+    { id: 3, name: 'Akshay', role: 'Team Member', linkedin: 'https://www.linkedin.com/in/akshay-kumar-738245293', github: 'https://github.com/akshay123kumar-coder', image: profile3 },
+    { id: 4, name: 'Nisith SK', role: 'Team Member', linkedin: 'https://www.linkedin.com/in/nishit-s-k-441141293?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app', github: 'https://github.com/NishitSK', image: profile4 },
   ]
 
   return (
@@ -70,7 +74,7 @@ export default function AboutPage() {
       {/* Team Section */}
       <section className="relative py-16 z-10 px-4">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center text-slate-900 mb-12">
+          <h2 className="text-4xl font-bold text-center mb-12 text-transparent bg-clip-text bg-linear-to-r from-emerald-600 via-green-500 to-teal-600 animate-pulse">
             Meet The Minds
           </h2>
 
@@ -79,50 +83,50 @@ export default function AboutPage() {
             {teamMembers.map((member) => (
               <div 
                 key={member.id}
-                className="group bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border border-slate-100"
+                className="group relative h-80 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border border-slate-100 perspective-[1000px]"
               >
-                {/* Gradient Header */}
-                <div className="bg-gradient-to-br from-emerald-500 to-green-600 p-8 relative overflow-hidden text-center h-32">
-                   <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-white opacity-20 rounded-full blur-2xl"></div>
-                   <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-32 h-32 bg-black opacity-10 rounded-full blur-2xl"></div>
-                </div>
-
-                {/* Avatar & Info */}
-                <div className="px-6 pb-6 relative">
-                  <div className="flex justify-center -mt-12 mb-4 relative z-10">
-                    <div className="w-24 h-24 bg-white rounded-full p-1.5 shadow-lg">
-                      <div className="w-full h-full bg-slate-100 rounded-full flex items-center justify-center overflow-hidden">
-                        <span className="text-3xl font-bold text-emerald-600">
-                          {member.name.charAt(0).toUpperCase()}
-                        </span>
-                      </div>
-                    </div>
+                <div className="absolute inset-0 transition-transform duration-500 transform-3d group-hover:transform-[rotateY(180deg)]">
+                  {/* Front Side */}
+                  <div className="absolute inset-0 bg-white rounded-2xl overflow-hidden backface-hidden">
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/10"></div>
                   </div>
 
-                  <div className="text-center">
-                    <h3 className="text-lg font-bold text-slate-900 mb-1 group-hover:text-emerald-600 transition-colors">
-                      {member.name}
-                    </h3>
-                    <p className="text-emerald-600 text-sm font-medium mb-6 uppercase tracking-wide">{member.role}</p>
+                  {/* Back - Info */}
+                  <div className="absolute inset-0 bg-white rounded-2xl overflow-hidden backface-hidden transform-[rotateY(180deg)]">
+                    <div className="bg-linear-to-br from-emerald-500 to-green-600 p-6 relative overflow-hidden text-center h-24">
+                      <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-white opacity-20 rounded-full blur-2xl"></div>
+                      <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-32 h-32 bg-black opacity-10 rounded-full blur-2xl"></div>
+                    </div>
 
-                    {/* Social Links */}
-                    <div className="flex justify-center gap-4">
-                      <a 
-                        href={member.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2 rounded-full bg-slate-50 text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-all border border-slate-200"
-                      >
-                        <Linkedin className="w-4 h-4" />
-                      </a>
-                      <a 
-                        href={member.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2 rounded-full bg-slate-50 text-slate-600 hover:bg-gray-800 hover:text-white transition-all border border-slate-200"
-                      >
-                        <Github className="w-4 h-4" />
-                      </a>
+                    <div className="px-6 pb-6 pt-4 text-center">
+                      <h3 className="text-lg font-bold text-slate-900 mb-1 group-hover:text-emerald-600 transition-colors">
+                        {member.name}
+                      </h3>
+                      <p className="text-emerald-600 text-sm font-medium mb-6 uppercase tracking-wide">{member.role}</p>
+
+                      <div className="flex justify-center gap-4">
+                        <a 
+                          href={member.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 rounded-full bg-slate-50 text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-all border border-slate-200"
+                        >
+                          <Linkedin className="w-4 h-4" />
+                        </a>
+                        <a 
+                          href={member.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 rounded-full bg-slate-50 text-slate-600 hover:bg-gray-800 hover:text-white transition-all border border-slate-200"
+                        >
+                          <Github className="w-4 h-4" />
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>
