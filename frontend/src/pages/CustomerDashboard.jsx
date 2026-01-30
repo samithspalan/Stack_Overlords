@@ -248,14 +248,7 @@ export default function CustomerDashboard({ onNavigate, onLogout }) {
                       <Mail className="w-4 h-4" />
                       Message
                     </button>
-                    <button className={`w-full font-semibold py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 ${
-                      isDark
-                        ? 'bg-slate-700 hover:bg-slate-600 text-teal-400'
-                        : 'bg-teal-50 hover:bg-teal-100 text-teal-600'
-                    }`}>
-                      <Phone className="w-4 h-4" />
-                      Call
-                    </button>
+                    
                   </div>
                 </div>
               </div>

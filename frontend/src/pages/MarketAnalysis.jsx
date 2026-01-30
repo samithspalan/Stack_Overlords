@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { ArrowLeft, TrendingUp, TrendingDown, Search, Zap, Leaf, Filter, AlertCircle, Sun, Moon } from 'lucide-react'
+import { ArrowLeft, TrendingUp, TrendingDown, Search, Zap, Leaf, Filter, AlertCircle, Sun, Moon, Home, BarChart3, Bell, Store, LogOut } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts'
 import { useTheme } from '../context/ThemeContext'
 
-export default function MarketAnalysis({ onBack }) {
+export default function MarketAnalysis({ onBack, onNavigate }) {
   const { isDark, toggleTheme } = useTheme()
+  const [activeLink, setActiveLink] = useState('market-prices')
   const [marketPrices, setMarketPrices] = useState([])
   const [crops, setCrops] = useState([])
   const [selectedCrop, setSelectedCrop] = useState(null)
@@ -180,26 +181,98 @@ export default function MarketAnalysis({ onBack }) {
   }
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 pt-5 ${isDark ? 'bg-slate-900 text-slate-100' : 'bg-linear-to-b from-green-50 via-white to-green-50'}`}>
-      {/* Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-        <div className="flex items-center justify-between mb-8">
-          <button
-            onClick={onBack}
-            className={`flex items-center gap-2 font-semibold transition-colors ${
-              isDark ? 'text-slate-400 hover:text-emerald-400' : 'text-slate-600 hover:text-green-600'
-            }`}
-          >
-            <ArrowLeft className="w-5 h-5" /> Back to Dashboard
-          </button>
-          <button
-            onClick={toggleTheme}
-            className={`p-2 rounded-full transition-all ${isDark ? 'bg-slate-800 text-yellow-400 hover:bg-slate-700' : 'bg-white text-slate-700 hover:bg-slate-100'}`}
-          >
-            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
+    <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-slate-950' : 'bg-slate-50'}`}>
+      {/* Logo - Fixed in top-left corner */}
+      <div className={`fixed top-6 left-6 z-50 flex items-center gap-3 backdrop-blur-md px-4 py-2 rounded-2xl shadow-sm border transition-colors duration-300 ${
+        isDark
+          ? 'bg-slate-800/90 border-slate-700'
+          : 'bg-white/90 border-emerald-100/50'
+      }`}>
+        <div className={`p-2 rounded-xl transition-colors duration-300 ${
+          isDark ? 'bg-emerald-900/50' : 'bg-emerald-100'
+        }`}>
+          <Leaf className="w-6 h-6 text-emerald-600" />
         </div>
+        <div>
+           <h1 className={`text-xl font-bold leading-none transition-colors duration-300 ${
+             isDark ? 'text-slate-100' : 'text-emerald-950'
+           }`}>KisanSetu</h1>
+           <span className={`text-[10px] uppercase tracking-wider font-bold transition-colors duration-300 ${
+             isDark ? 'text-emerald-400' : 'text-emerald-600'
+           }`}>Farmer Connect</span>
+        </div>
+      </div>
 
+      {/* Navigation Bar - Centered at top, sticky */}
+      <nav className="fixed top-6 left-1/2 transform -translate-x-1/2 z-40 w-auto max-w-[90%] flex items-center gap-4">
+        <div className={`backdrop-blur-xl rounded-2xl px-2 py-2 shadow-xl shadow-emerald-900/5 border transition-colors duration-300 ${
+          isDark
+            ? 'bg-slate-800/80 border-slate-700/50 ring-1 ring-black/20'
+            : 'bg-white/80 border-white/50 ring-1 ring-black/5'
+        }`}>
+          <div className="flex gap-1 items-center">
+            {[
+              { id: 'home', label: 'Home', icon: Home },
+              { id: 'market-prices', label: 'Market Prices', icon: BarChart3 },
+              { id: 'chats', label: 'Chats', icon: Bell },
+              { id: 'listings', label: 'My Listings', icon: Store }
+            ].map(item => (
+              <button 
+                key={item.id}
+                onClick={() => {
+                  if (item.id === 'home' && onNavigate) {
+                    onNavigate('farmer-dashboard')
+                  } else if (item.id === 'market-prices') {
+                    setActiveLink(item.id)
+                  } else if (item.id === 'chats' && onNavigate) {
+                    onNavigate('chats')
+                  } else if (item.id === 'listings' && onNavigate) {
+                    onNavigate('my-listings')
+                  }
+                }}
+                className={`flex items-center gap-2 font-semibold transition-all duration-300 px-5 py-2.5 rounded-xl text-sm ${
+                  activeLink === item.id 
+                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' 
+                    : isDark
+                      ? 'text-slate-400 hover:text-emerald-400 hover:bg-slate-700/50'
+                      : 'text-slate-600 hover:text-emerald-700 hover:bg-emerald-50/80'
+                }`}
+              >
+                <item.icon className={`w-4 h-4 ${activeLink === item.id ? 'text-emerald-100' : isDark ? 'text-slate-500' : 'text-slate-400'}`} />
+                {item.label}
+              </button>
+            ))}
+            <div className={`w-px h-8 transition-colors duration-300 ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`}></div>
+            <button
+              onClick={toggleTheme}
+              className={`flex items-center justify-center w-10 h-10 rounded-xl transition-all ${
+                isDark
+                  ? 'text-yellow-400 hover:bg-slate-700/50'
+                  : 'text-slate-600 hover:bg-slate-100'
+              }`}
+              title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
+              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
+            <a 
+               href="#"
+               title="Logout"
+               className={`flex items-center justify-center w-10 h-10 rounded-xl transition-all ${
+                 isDark
+                   ? 'text-slate-500 hover:text-red-400 hover:bg-red-950/30'
+                   : 'text-slate-400 hover:text-red-500 hover:bg-red-50'
+               }`}
+            >
+               <LogOut className="w-5 h-5" />
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      {/* Top Spacing for fixed navbar */}
+      <div className="h-28"></div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className={`text-4xl font-bold ${isDark ? 'text-slate-100' : 'text-slate-800'}`}>Market Trend Analysis</h1>
         </div>
@@ -274,7 +347,9 @@ export default function MarketAnalysis({ onBack }) {
                   <button
                     key={crop.commodity}
                     onClick={() => {
+                      setSelectedCrop(crop.commodity)
                       setSelectedCropDemand(crop.demandLevel)
+                      setCropAnalysis(null)
                       fetchCropAnalysis(crop.commodity)
                     }}
                     className={`w-full text-left p-4 transition-all border-l-4 ${
@@ -333,7 +408,7 @@ export default function MarketAnalysis({ onBack }) {
               </div>
               <p className={`font-semibold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Analyzing {selectedCrop}...</p>
             </div>
-          ) : cropAnalysis ? (
+          ) : (
             <div className="space-y-6">
               {/* Title with % change */}
               <div className={`rounded-2xl p-6 border transition-colors ${
@@ -346,12 +421,12 @@ export default function MarketAnalysis({ onBack }) {
                   <div className="text-right">
                     <p className={`text-sm mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Price Volatility</p>
                     <p className={`text-3xl font-bold ${
-                      cropAnalysis.analysis?.priceMovement?.percentageChange > 5 ? 'text-green-600' :
-                      cropAnalysis.analysis?.priceMovement?.percentageChange < -5 ? 'text-red-600' :
+                      cropAnalysis?.analysis?.priceMovement?.percentageChange > 5 ? 'text-green-600' :
+                      cropAnalysis?.analysis?.priceMovement?.percentageChange < -5 ? 'text-red-600' :
                       'text-slate-600'
                     }`}>
-                      {cropAnalysis.analysis?.priceMovement?.percentageChange > 0 ? '↑' : '↓'} 
-                      {Math.abs(cropAnalysis.analysis?.priceMovement?.percentageChange || 0)}%
+                      {cropAnalysis?.analysis?.priceMovement?.percentageChange > 0 ? '↑' : '↓'} 
+                      {Math.abs(cropAnalysis?.analysis?.priceMovement?.percentageChange || 0)}%
                     </p>
                   </div>
                 </div>
@@ -421,11 +496,11 @@ export default function MarketAnalysis({ onBack }) {
                     <div>
                       <p className={`text-xs font-bold uppercase tracking-wide mb-2 ${isDark ? 'text-slate-400' : 'text-slate-400'}`}>Volatility Level</p>
                       <p className={`text-2xl font-bold ${
-                        cropAnalysis.analysis?.demandLevel === 'high' ? 'text-green-600' :
-                        cropAnalysis.analysis?.demandLevel === 'medium' ? 'text-yellow-600' :
+                        cropAnalysis?.analysis?.demandLevel === 'high' ? 'text-green-600' :
+                        cropAnalysis?.analysis?.demandLevel === 'medium' ? 'text-yellow-600' :
                         'text-red-600'
                       }`}>
-                        {cropAnalysis.analysis?.demandLevel?.toUpperCase()}
+                        {(cropAnalysis?.analysis?.demandLevel || selectedCropDemand || 'medium').toUpperCase()}
                       </p>
                     </div>
                   </div>
@@ -469,7 +544,7 @@ export default function MarketAnalysis({ onBack }) {
 
               {/* Recommendation */}
               <div className={`rounded-2xl p-6 border-2 transition-colors ${
-                cropAnalysis.analysis?.recommendation?.action === 'sell' ? 
+                cropAnalysis?.analysis?.recommendation?.action === 'sell' ? 
                   (isDark ? 'bg-slate-800 border-emerald-700/50' : 'bg-green-50 border-green-200') :
                   (isDark ? 'bg-slate-800 border-slate-700/50' : 'bg-yellow-50 border-yellow-200')
               }`}>
@@ -480,30 +555,20 @@ export default function MarketAnalysis({ onBack }) {
                   <div>
                     <p className={`text-xs font-bold uppercase tracking-wide mb-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Price Trend</p>
                     <p className={`text-2xl font-bold ${
-                      cropAnalysis.analysis?.recommendation?.action === 'sell' ? 'text-green-600' :
+                      cropAnalysis?.analysis?.recommendation?.action === 'sell' ? 'text-green-600' :
                       'text-yellow-600'
                     }`}>
-                      {cropAnalysis.analysis?.recommendation?.action === 'sell' ? 'GOOD SELLING OPPORTUNITY' : 'STABLE PRICING'}
+                      {cropAnalysis?.analysis?.recommendation?.action === 'sell' ? 'GOOD SELLING OPPORTUNITY' : 'STABLE PRICING'}
                     </p>
                   </div>
                   <div>
                     <p className={`text-xs font-bold uppercase tracking-wide mb-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Analysis</p>
                     <p className={isDark ? 'text-slate-300' : 'text-slate-700'} style={{lineHeight: '1.5'}}>
-                      Based on the price spread of {cropAnalysis.analysis?.priceMovement?.percentageChange}% between minimum and maximum market prices, this commodity shows {selectedCropDemand === 'high' ? 'significant market volatility with potential for value realization.' : 'moderate price stability across different markets.'}
+                      Based on the price spread of {cropAnalysis?.analysis?.priceMovement?.percentageChange || 0}% between minimum and maximum market prices, this commodity shows {selectedCropDemand === 'high' ? 'significant market volatility with potential for value realization.' : 'moderate price stability across different markets.'}
                     </p>
                   </div>
                 </div>
               </div>
-            </div>
-          ) : (
-            <div className={`rounded-2xl shadow-lg p-12 text-center border-2 border-dashed transition-colors ${
-              isDark
-                ? 'bg-slate-800 border-slate-700'
-                : 'bg-white border-slate-200'
-            }`}>
-              <AlertCircle className={`w-16 h-16 mx-auto mb-4 ${isDark ? 'text-slate-600' : 'text-slate-300'}`} />
-              <p className={`font-semibold text-lg ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>No analysis available</p>
-              <p className={isDark ? 'text-slate-500' : 'text-slate-400'}>Please try again later</p>
             </div>
           )}
         </div>

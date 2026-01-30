@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { ArrowLeft, Send, Search, MoreVertical, Phone, Video, X } from 'lucide-react'
+import { ArrowLeft, Send, Search, MoreVertical, Phone, Video, X, Home, BarChart3, Bell, Store, LogOut, Sun, Moon, Leaf } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
 
-export default function ChatsPage({ onBack, userType = 'farmer' }) {
+export default function ChatsPage({ onBack, onNavigate, userType = 'farmer' }) {
   const { isDark, toggleTheme } = useTheme()
+  const [activeLink, setActiveLink] = useState('chats')
   const [selectedChat, setSelectedChat] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [messageText, setMessageText] = useState('')
@@ -75,37 +76,105 @@ export default function ChatsPage({ onBack, userType = 'farmer' }) {
   )
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-slate-900 text-slate-100' : 'bg-linear-to-b from-teal-50 via-white to-teal-50'}`}>
-      {/* Header */}
-      <div className={`sticky top-0 z-30 backdrop-blur-md transition-colors ${
-        isDark 
-          ? 'bg-slate-800/80 border-slate-700/50' 
-          : 'bg-white/80 border-white/50'
-      } border-b`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <button
-              onClick={onBack}
-              className={`flex items-center gap-2 font-semibold transition-colors ${
-                isDark ? 'text-slate-400 hover:text-teal-400' : 'text-slate-600 hover:text-teal-600'
-              }`}
-            >
-              <ArrowLeft className="w-5 h-5" /> Back
-            </button>
-            <h1 className="text-2xl font-bold">Messages</h1>
-            <div className="w-10"></div>
-          </div>
+    <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-slate-950' : 'bg-slate-50'}`}>
+      {/* Logo - Fixed in top-left corner */}
+      <div className={`fixed top-6 left-6 z-50 flex items-center gap-3 backdrop-blur-md px-4 py-2 rounded-2xl shadow-sm border transition-colors duration-300 ${
+        isDark
+          ? 'bg-slate-800/90 border-slate-700'
+          : 'bg-white/90 border-emerald-100/50'
+      }`}>
+        <div className={`p-2 rounded-xl transition-colors duration-300 ${
+          isDark ? 'bg-emerald-900/50' : 'bg-emerald-100'
+        }`}>
+          <Leaf className="w-6 h-6 text-emerald-600" />
+        </div>
+        <div>
+           <h1 className={`text-xl font-bold leading-none transition-colors duration-300 ${
+             isDark ? 'text-slate-100' : 'text-emerald-950'
+           }`}>KisanSetu</h1>
+           <span className={`text-[10px] uppercase tracking-wider font-bold transition-colors duration-300 ${
+             isDark ? 'text-emerald-400' : 'text-emerald-600'
+           }`}>Farmer Connect</span>
         </div>
       </div>
 
+      {/* Navigation Bar - Centered at top, sticky */}
+      <nav className="fixed top-6 left-1/2 transform -translate-x-1/2 z-40 w-auto max-w-[90%] flex items-center gap-4">
+        <div className={`backdrop-blur-xl rounded-2xl px-2 py-2 shadow-xl shadow-emerald-900/5 border transition-colors duration-300 ${
+          isDark
+            ? 'bg-slate-800/80 border-slate-700/50 ring-1 ring-black/20'
+            : 'bg-white/80 border-white/50 ring-1 ring-black/5'
+        }`}>
+          <div className="flex gap-1 items-center">
+            {[
+              { id: 'home', label: 'Home', icon: Home },
+              { id: 'market-prices', label: 'Market Prices', icon: BarChart3 },
+              { id: 'chats', label: 'Chats', icon: Bell },
+              { id: 'listings', label: 'My Listings', icon: Store }
+            ].map(item => (
+              <button 
+                key={item.id}
+                onClick={() => {
+                  if (item.id === 'home' && onNavigate) {
+                    onNavigate('farmer-dashboard')
+                  } else if (item.id === 'market-prices' && onNavigate) {
+                    onNavigate('market-analysis')
+                  } else if (item.id === 'chats') {
+                    setActiveLink(item.id)
+                  } else if (item.id === 'listings' && onNavigate) {
+                    onNavigate('my-listings')
+                  }
+                }}
+                className={`flex items-center gap-2 font-semibold transition-all duration-300 px-5 py-2.5 rounded-xl text-sm ${
+                  activeLink === item.id 
+                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' 
+                    : isDark
+                      ? 'text-slate-400 hover:text-emerald-400 hover:bg-slate-700/50'
+                      : 'text-slate-600 hover:text-emerald-700 hover:bg-emerald-50/80'
+                }`}
+              >
+                <item.icon className={`w-4 h-4 ${activeLink === item.id ? 'text-emerald-100' : isDark ? 'text-slate-500' : 'text-slate-400'}`} />
+                {item.label}
+              </button>
+            ))}
+            <div className={`w-px h-8 transition-colors duration-300 ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`}></div>
+            <button
+              onClick={toggleTheme}
+              className={`flex items-center justify-center w-10 h-10 rounded-xl transition-all ${
+                isDark
+                  ? 'text-yellow-400 hover:bg-slate-700/50'
+                  : 'text-slate-600 hover:bg-slate-100'
+              }`}
+              title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
+              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
+            <a 
+               href="#"
+               title="Logout"
+               className={`flex items-center justify-center w-10 h-10 rounded-xl transition-all ${
+                 isDark
+                   ? 'text-slate-500 hover:text-red-400 hover:bg-red-950/30'
+                   : 'text-slate-400 hover:text-red-500 hover:bg-red-50'
+               }`}
+            >
+               <LogOut className="w-5 h-5" />
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      {/* Top Spacing for fixed navbar */}
+      <div className="h-28"></div>
+
       {/* Main Chat Area */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 h-[calc(100vh-80px)] flex gap-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-[calc(100vh-160px)] flex gap-6">
         {/* Chat List */}
-        <div className={`w-full md:w-80 rounded-2xl shadow-lg overflow-hidden flex flex-col ${
+        <div className={`w-full md:w-96 lg:w-1/3 rounded-2xl shadow-lg overflow-hidden flex flex-col ${
           isDark ? 'bg-slate-800' : 'bg-white'
-        } ${selectedChat && window.innerWidth < 768 ? 'hidden' : ''}`}>
+        } ${selectedChat ? 'hidden md:flex' : ''}`}>
           {/* Search */}
-          <div className="p-4 border-b border-slate-700/50">
+          <div className={`p-4 border-b ${isDark ? 'border-slate-700/50' : 'border-slate-200'}`}>
             <div className="relative">
               <Search className={`absolute left-3 top-3 w-5 h-5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`} />
               <input

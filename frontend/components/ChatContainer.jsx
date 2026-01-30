@@ -51,7 +51,7 @@ function ChatContainer() {
                     msg.senderId === authUser._id
                       ? "bg-cyan-600 text-white"
                       : "bg-slate-800 dark:bg-slate-800 text-white dark:text-slate-200"
-                  } max-w-[78vw] md:max-w-[70%] break-words whitespace-pre-wrap p-3 md:p-4 text-sm md:text-base rounded-xl md:rounded-2xl`}
+                  } max-w-[78vw] md:max-w-[70%] overflow-wrap break-word whitespace-pre-wrap p-3 md:p-4 text-sm md:text-base rounded-xl md:rounded-2xl`}
                 >
                   {msg.image && (
                     <img src={msg.image} alt="Shared" className="rounded-lg w-full h-auto max-h-48 md:max-h-64 object-cover" />

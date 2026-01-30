@@ -11,6 +11,7 @@ import CustomerLogin from './pages/CustomerLogin'
 import FarmerSignup from './pages/FarmerSignup'
 import CustomerSignup from './pages/CustomerSignup'
 import ChatsPage from './pages/ChatsPage'
+import MyListings from './pages/MyListings'
 
 function App() {
   const [currentPage, setCurrentPage] = useState(window.location.hash.slice(1) || 'home')
@@ -154,15 +155,21 @@ function App() {
           )
         ) : currentPage === 'market-analysis' ? (
           isAuthenticated && userType === 'farmer' ? (
-            <MarketAnalysis onBack={() => handleNavigate('farmer-dashboard')} onLogout={handleLogout} />
+            <MarketAnalysis onBack={() => handleNavigate('farmer-dashboard')} onNavigate={handleNavigate} onLogout={handleLogout} />
           ) : (
             <FarmerLogin onNavigate={handleNavigate} onLoginSuccess={handleLoginSuccess} />
           )
         ) : currentPage === 'chats' ? (
           isAuthenticated ? (
-            <ChatsPage onBack={() => handleNavigate(userType === 'customer' ? 'customer-dashboard' : 'farmer-dashboard')} userType={userType} />
+            <ChatsPage onBack={() => handleNavigate(userType === 'customer' ? 'customer-dashboard' : 'farmer-dashboard')} onNavigate={handleNavigate} userType={userType} />
           ) : (
             <HomePage />
+          )
+        ) : currentPage === 'my-listings' ? (
+          isAuthenticated && userType === 'farmer' ? (
+            <MyListings onBack={() => handleNavigate('farmer-dashboard')} onNavigate={handleNavigate} />
+          ) : (
+            <FarmerLogin onNavigate={handleNavigate} onLoginSuccess={handleLoginSuccess} />
           )
         ) : currentPage === 'about' ? (
           <AboutPage />
