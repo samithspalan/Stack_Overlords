@@ -1,5 +1,38 @@
 @import "tailwindcss";
 
+@property --border-angle {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 0deg;
+}
+
+@keyframes border-rotate {
+  to {
+    --border-angle: 360deg;
+  }
+}
+
+.border-animated-container {
+  --border-angle: 0deg;
+  position: relative;
+  background:
+    linear-gradient(to bottom, white, white) padding-box,
+    conic-gradient(
+        from var(--border-angle),
+        transparent 0%,
+        #10b981 10%,
+        #06b6d4 30%,
+        #8b5cf6 50%,
+        #ec4899 70%,
+        #10b981 90%,
+        transparent 100%
+      )
+      border-box;
+  border: 2px solid transparent;
+  border-radius: 1.5rem;
+  animation: border-rotate 4s linear infinite;
+}
+
 html,
 body,
 #root {

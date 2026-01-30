@@ -143,7 +143,12 @@ export default function HomePage() {
             </a>
             <a 
               href="#contact" 
-              onClick={() => setActiveLink('contact')}
+              onClick={(e) => {
+                e.preventDefault()
+                setActiveLink('contact')
+                const element = document.getElementById('contact')
+                element?.scrollIntoView({ behavior: 'smooth' })
+              }}
               className={`font-medium transition-all duration-300 px-3 py-2 rounded-lg ${
                 activeLink === 'contact' ? 'bg-green-600 text-white' : 'text-gray-700 hover:text-green-600'
               }`}
@@ -207,7 +212,7 @@ export default function HomePage() {
         {/* Login Cards Grid */}
         <div className="grid md:grid-cols-3 gap-8 mb-12">
           {/* Farmer Card */}
-          <a href="#farmer-dashboard" className="group block">
+          <a href="#farmer-login" className="group block">
             <div className="h-full bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:scale-105 overflow-hidden">
               <div className="bg-linear-to-br from-green-400 to-green-600 p-8 relative overflow-hidden">
                 <div className="absolute top-0 right-0 -mr-20 -mt-20 w-40 h-40 bg-white opacity-10 rounded-full"></div>
@@ -226,7 +231,7 @@ export default function HomePage() {
           </a>
 
           {/* Admin Card */}
-          <a href="/admin-login" className="group block">
+          <a href="#admin-login" className="group block">
             <div className="h-full bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:scale-105 overflow-hidden">
               <div className="bg-linear-to-br from-emerald-400 to-emerald-600 p-8 relative overflow-hidden">
                 <div className="absolute top-0 right-0 -mr-20 -mt-20 w-40 h-40 bg-white opacity-10 rounded-full"></div>
@@ -245,7 +250,7 @@ export default function HomePage() {
           </a>
 
           {/* Customer Card */}
-          <a href="/customer-login" className="group block">
+          <a href="#customer-login" className="group block">
             <div className="h-full bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:scale-105 overflow-hidden">
               <div className="bg-linear-to-br from-teal-400 to-teal-600 p-8 relative overflow-hidden">
                 <div className="absolute top-0 right-0 -mr-20 -mt-20 w-40 h-40 bg-white opacity-10 rounded-full"></div>
