@@ -3,7 +3,7 @@ import HomePage from './pages/HomePage'
 import FarmerDashboard from './pages/FarmerDashboard'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('home')
+  const [currentPage, setCurrentPage] = useState(window.location.hash.slice(1) || 'home')
 
   // Listen to hash changes
   useEffect(() => {
@@ -14,12 +14,6 @@ function App() {
     }
 
     window.addEventListener('hashchange', handleHashChange)
-    
-    // Check initial hash
-    const initialHash = window.location.hash.slice(1)
-    if (initialHash) {
-      setCurrentPage(initialHash)
-    }
 
     return () => window.removeEventListener('hashchange', handleHashChange)
   }, [])
