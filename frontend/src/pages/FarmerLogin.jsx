@@ -1,11 +1,42 @@
 import { Sprout, Mail, Lock } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import axios from 'axios'
 import BorderAnimatedContainer from '../../components/BorderAnimatedContainer'
 
 export default function FarmerLogin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const googleButtonRef = useRef(null)
+
+  const handleGoogleLogin = async (response) => {
+    try {
+      const res = await axios.post('http://localhost:8080/api/auth/google', {
+        token: response.credential
+      })
+      
+      console.log('Google Login Success:', res.data)
+      // Navigate to dashboard after success
+      window.location.hash = '#farmer-dashboard'
+    } catch (error) {
+      console.error('Google Login Error:', error)
+    }
+  }
+
+  useEffect(() => {
+    /* global google */
+    if (window.google) {
+      google.accounts.id.initialize({
+        client_id: "952084918159-7rumtd7e8ublui9pphgum4rtp4uo87o8.apps.googleusercontent.com",
+        callback: handleGoogleLogin
+      })
+      
+      google.accounts.id.renderButton(
+        googleButtonRef.current,
+        { theme: "outline", size: "large", width: "100%", text: "continue_with" } 
+      )
+    }
+  }, [])
 
   const handleLogin = (e) => {
     e.preventDefault()
@@ -104,6 +135,14 @@ export default function FarmerLogin() {
             >
               Login as Farmer
             </button>
+
+            <div className="mt-6 grid grid-cols-3 items-center text-gray-400">
+               <hr className="border-green-100" />
+               <p className="text-center text-sm font-medium text-gray-500">OR</p>
+               <hr className="border-green-100" />
+            </div>
+
+            <div ref={googleButtonRef} className="w-full flex justify-center"></div>
           </form>
 
           {/* Signup Link */}

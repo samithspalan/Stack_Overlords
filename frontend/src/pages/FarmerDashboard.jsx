@@ -499,23 +499,6 @@ export default function FarmerDashboard() {
                         <Leaf className="w-4 h-4" />
                         </div>
                     </div>
-
-                    {/* Market Filter */}
-                    <div className="relative w-full md:w-auto md:flex-1 group">
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block ml-1">Market</label>
-                        <select 
-                        value={selectedLocation} 
-                        onChange={(e) => setSelectedLocation(e.target.value)} 
-                        className="appearance-none w-full bg-slate-50 border border-slate-200 text-slate-700 py-3.5 px-4 pr-10 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-semibold transition-all cursor-pointer hover:border-slate-300"
-                        >
-                            {getUniqueValues('district').map(loc => (
-                            <option key={loc} value={loc}>{loc === 'all' ? 'All Markets' : loc}</option>
-                            ))}
-                        </select>
-                        <div className="pointer-events-none absolute bottom-3.5 right-0 flex items-center px-4 text-slate-400 group-hover:text-emerald-500 transition-colors">
-                        <Store className="w-4 h-4" />
-                        </div>
-                    </div>
                     
                     {/* Unit Conversion */}
                     <div className="w-full md:w-auto mt-6 md:mt-5 p-1 bg-slate-100 rounded-xl flex">

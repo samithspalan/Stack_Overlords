@@ -1,6 +1,10 @@
 import bcrypt from "bcryptjs";
 import User from "../model/model.js";
 import Token from "../config/token.js";
+import { OAuth2Client } from 'google-auth-library';
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
 export const singUp= async (req, res) => {
     try{
         const { Username, email, password } = req.body;
@@ -135,3 +139,39 @@ export const updateUser= async (req, res) => {
         res.status(500).json({message: err.message});
     }       
 }
+
+export const googleLogin = async (req, res) => {
+    try {
+        const { token } = req.body;
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
+        const { name, email, picture } = ticket.getPayload();
+
+        let user = await User.findOne({ email });
+        if (!user) {
+            user = await User.create({
+                Username: name,
+                email,
+                password: await bcrypt.hash(Math.random().toString(36).slice(-8), 10),
+            });
+        }
+
+        const jwtToken = Token(user._id);
+        res.cookie("token", jwtToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+
+        return res.status(200).json({
+            message: "Google Login Successful",
+            user: { _id: user._id, Username: user.Username, email: user.email }
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Google Login Failed" });
+    }
+};
