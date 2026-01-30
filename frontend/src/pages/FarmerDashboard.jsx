@@ -36,31 +36,112 @@ export default function FarmerDashboard() {
 
   // Helper: Image Mapper with High Quality Stock Images
   const getCropImage = (cropName) => {
-    const name = cropName.toLowerCase()
+    const cropImages = {
+      "Alsandikai": "https://upload.wikimedia.org/wikipedia/commons/9/97/Yardlong_beans_02.jpg",
+      "Amaranthus": "https://upload.wikimedia.org/wikipedia/commons/a/af/Amaranthus_caudatus_fo._saccharinus.jpg",
+      "Amla": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Phyllanthus_emblica.jpg",
+      "Apple": "https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg",
+      "Arhar Dal": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Toor_Dal.jpg",
+      "Ashgourd": "https://upload.wikimedia.org/wikipedia/commons/9/96/Benincasa_hispida_2.jpg",
+      "Bajra": "https://upload.wikimedia.org/wikipedia/commons/9/98/Pearl_millet.jpg",
+      "Banana": "https://upload.wikimedia.org/wikipedia/commons/4/44/Bananas_white_background_DS.jpg",
+      "Beans": "https://upload.wikimedia.org/wikipedia/commons/2/25/Green_Beans.JPG",
+      "Beetroot": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Beetroot_jm16666.jpg",
+      "Bengal Gram": "https://upload.wikimedia.org/wikipedia/commons/0/01/Chickpea_India.jpg",
+      "Ber": "https://upload.wikimedia.org/wikipedia/commons/6/6c/Ziziphus_mauritiana_fruit.jpg",
+      "Betal Leaves": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Betel_leaves.jpg",
+      "Bhindi": "https://upload.wikimedia.org/wikipedia/commons/0/05/Okra_001.JPG",
+      "Bitter gourd": "https://upload.wikimedia.org/wikipedia/commons/0/03/Bitter_Melon_02.jpg",
+      "Black Gram": "https://upload.wikimedia.org/wikipedia/commons/3/30/Black_gram.jpg",
+      "Black pepper": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Black_papper.jpg",
+      "Bottle gourd": "https://upload.wikimedia.org/wikipedia/commons/0/02/Bottle_gourd.jpg",
+      "Brinjal": "https://upload.wikimedia.org/wikipedia/commons/7/76/Solanum_melongena_24_08_2012_%281%29.JPG",
+      "Cabbage": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Cabbage_and_cross_section_on_white.jpg",
+      "Capsicum": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Bell_pepper.jpg",
+      "Carrot": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Carrots_at_Lulu_Hypermarket.jpg",
+      "Castor Seed": "https://upload.wikimedia.org/wikipedia/commons/9/97/Castor_beans.jpg",
+      "Cauliflower": "https://upload.wikimedia.org/wikipedia/commons/2/22/Cauliflower_02.jpg",
+      "Chikoos": "https://upload.wikimedia.org/wikipedia/commons/7/77/Sapodilla_fruit.jpg",
+      "Chili Red": "https://upload.wikimedia.org/wikipedia/commons/5/53/Red_Hot_Chili_Peppers.jpg",
+      "Chow Chow": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Chayote_Display.jpg",
+      "Cluster beans": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Guar_Pods.jpg",
+      "Coconut": "https://upload.wikimedia.org/wikipedia/commons/f/f1/Coconuts_-_single_and_cracked_open.jpg",
+      "Coffee": "https://upload.wikimedia.org/wikipedia/commons/4/45/Coffee_beans_by_gnuckx.jpg",
+      "Colacasia": "https://upload.wikimedia.org/wikipedia/commons/5/54/Taro_corms.jpg",
+      "Coriander": "https://upload.wikimedia.org/wikipedia/commons/7/78/Coriander_seeds.jpg",
+      "Cotton": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Cotton_plant.jpg",
+      "Cowpea": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Vigna_unguiculata_pods.jpg",
+      "Cucumbar": "https://upload.wikimedia.org/wikipedia/commons/3/32/Cucumber_fresh.jpg",
+      "Cummin Seed": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Cumin_seeds.jpg",
+      "Drumstick": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Drumstick_Vegetable.jpg",
+      "Elephant Yam": "https://upload.wikimedia.org/wikipedia/commons/5/50/Amorphophallus_paeoniifolius_corm.jpg",
+      "Fish": "https://upload.wikimedia.org/wikipedia/commons/6/6b/Fish_market_Varkala.jpg",
+      "French Beans": "https://upload.wikimedia.org/wikipedia/commons/c/c2/French_beans.jpg",
+      "Garlic": "https://upload.wikimedia.org/wikipedia/commons/3/36/Garlic_cloves_and_bulb.jpg",
+      "Ginger": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Ginger_Root.jpg",
+      "Grapes": "https://upload.wikimedia.org/wikipedia/commons/b/bb/Table_grapes_on_white.jpg",
+      "Green Chilli": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Green_chilli_peppers.jpg",
+      "Green Gram": "https://upload.wikimedia.org/wikipedia/commons/d/da/Mung_beans.jpg",
+      "Green Peas": "https://upload.wikimedia.org/wikipedia/commons/8/80/Peas_in_pods_-_Studio.jpg",
+      "Groundnut": "https://upload.wikimedia.org/wikipedia/commons/1/14/Groundnut_Arachis_hypogaea.jpg",
+      "Guar": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Guar_Pods.jpg",
+      "Guava": "https://upload.wikimedia.org/wikipedia/commons/0/02/Guava_ID.jpg",
+      "Gur": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Jaggery_India.JPG",
+      "Jowar": "https://upload.wikimedia.org/wikipedia/commons/c/c9/Sorghum_bicolor_grain.jpg",
+      "Kabuli Chana": "https://upload.wikimedia.org/wikipedia/commons/7/70/Chickpeas.jpg",
+      "Kinnow": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Kinnow.jpg",
+      "Knool Khol": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Kohlrabi.jpg",
+      "Lemon": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Lemon.jpg",
+      "Lime": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Lime_fruit.jpg",
+      "Little gourd": "https://upload.wikimedia.org/wikipedia/commons/3/36/Coccinia_grandis_fruit.jpg",
+      "Maize": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Corn.jpg",
+      "Mango": "https://upload.wikimedia.org/wikipedia/commons/9/90/Hapus_Mango.jpg",
+      "Mashrooms": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Mushroom-IMG_3165.JPG",
+      "Methi": "https://upload.wikimedia.org/wikipedia/commons/1/1c/Methi_Seeds.jpg",
+      "Mint": "https://upload.wikimedia.org/wikipedia/commons/0/05/Mint-leaves-2007.jpg",
+      "Mousambi": "https://upload.wikimedia.org/wikipedia/commons/0/08/Sweet_Lime.jpg",
+      "Mustard": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Mustard_seeds_mixture.jpg",
+      "Onion": "https://upload.wikimedia.org/wikipedia/commons/2/25/Onion_on_White.JPG",
+      "Orange": "https://upload.wikimedia.org/wikipedia/commons/c/c4/Orange-Fruit-Pieces.jpg",
+      "Paddy": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Paddy_grains.jpg",
+      "Papaya": "https://upload.wikimedia.org/wikipedia/commons/6/6b/Papaya_cross_section_BNC.jpg",
+      "Pineapple": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Pineapple_and_cross_section.jpg",
+      "Pomegranate": "https://upload.wikimedia.org/wikipedia/commons/8/8c/Pomegranate_02.jpg",
+      "Potato": "https://upload.wikimedia.org/wikipedia/commons/a/ab/Patates.jpg",
+      "Pumpkin": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Pumpkin_ds.jpg",
+      "Raddish": "https://upload.wikimedia.org/wikipedia/commons/1/18/Radish_3.jpg",
+      "Rice": "https://upload.wikimedia.org/wikipedia/commons/2/20/White_Rice.jpg",
+      "Ridgeguard": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Luffa_acutangula_fruit.jpg",
+      "Sesamum": "https://upload.wikimedia.org/wikipedia/commons/7/75/Sesame_seeds.jpg",
+      "Snakeguard": "https://upload.wikimedia.org/wikipedia/commons/3/31/Snake_Gourd_01.jpg",
+      "Soyabean": "https://upload.wikimedia.org/wikipedia/commons/9/90/Soybean.JPG",
+      "Spinach": "https://upload.wikimedia.org/wikipedia/commons/3/37/Spinach_leaves.jpg",
+      "Sweet Corn": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Corn.jpg",
+      "Sweet Potato": "https://upload.wikimedia.org/wikipedia/commons/5/58/Ipomoea_batatas_006.JPG",
+      "Tamarind": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Tamarindus_indica_fruit.jpg",
+      "Tapioca": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Manihot_esculenta_dsc07325.jpg",
+      "Tender Coconut": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Green_Coconut_in_shop.jpg",
+      "Tinda": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Praecitrullus_fistulosus.jpg",
+      "Tomato": "https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg",
+      "Turmeric": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Curcuma_longa_roots.jpg",
+      "Turnip": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Turnip_2622027.jpg",
+      "Water Melon": "https://upload.wikimedia.org/wikipedia/commons/4/47/Taiwan_2009_Tainan_City_Organic_Farm_Watermelon_FRD_7962.jpg",
+      "Wheat": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Vehn%C3%A4pelto_6.jpg",
+      "Yam": "https://upload.wikimedia.org/wikipedia/commons/0/02/Yam_Dioscorea.jpg"
+    }
+
+    // Try to find an exact match or partial match in our map
+    const name = cropName.split('(')[0].trim() // Basic cleanup for lookup
     
-    // Coconut (Generic)
-    if (name.includes('coconut')) return 'https://plus.unsplash.com/premium_photo-1675237626068-d615f7959929?q=80&w=600&auto=format&fit=crop'
+    // Direct match
+    if (cropImages[name]) return cropImages[name]
     
-    // Cereals & Grains
-    if (name.includes('paddy') || name.includes('rice')) return 'https://images.unsplash.com/photo-1586201375761-83865001e31c?q=80&w=600&auto=format&fit=crop'
-    if (name.includes('wheat')) return 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?q=80&w=600&auto=format&fit=crop'
-    if (name.includes('maize') || name.includes('corn')) return 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?q=80&w=600&auto=format&fit=crop'
-    
-    // Plantation Crops
-    if (name.includes('arecanut')) return 'https://traders.org.in/wp-content/uploads/2022/10/Arecanut.jpg' // Using a reliable specific placeholder for Arecanut as stock sites often lack specific Indian varieties
-    if (name.includes('cashew')) return 'https://images.unsplash.com/photo-1548586196-aa5803b77379?q=80&w=600&auto=format&fit=crop'
-    if (name.includes('coffee')) return 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=600&auto=format&fit=crop'
-    
-    // Fruits
-    if (name.includes('banana')) return 'https://images.unsplash.com/photo-1603833665858-e61d17a86224?q=80&w=600&auto=format&fit=crop'
-    if (name.includes('mango')) return 'https://images.unsplash.com/photo-1553279768-865429fa0078?q=80&w=600&auto=format&fit=crop'
-    
-    // Vegetables & Spices
-    if (name.includes('pepper') || name.includes('chilli') || name.includes('spices')) return 'https://images.unsplash.com/photo-1509358271058-acd22cc93898?q=80&w=600&auto=format&fit=crop'
-    if (name.includes('onion')) return 'https://images.unsplash.com/photo-1620574387735-3624d75b2dbc?q=80&w=600&auto=format&fit=crop'
-    if (name.includes('potato')) return 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?q=80&w=600&auto=format&fit=crop'
-    if (name.includes('tomato')) return 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?q=80&w=600&auto=format&fit=crop'
-    if (name.includes('ginger')) return 'https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?q=80&w=600&auto=format&fit=crop'
+    // Fuzzy search through our map keys
+    const match = Object.keys(cropImages).find(key => 
+      cropName.toLowerCase().includes(key.toLowerCase()) || 
+      key.toLowerCase().includes(cropName.toLowerCase())
+    )
+    if (match) return cropImages[match]
     
     // Fallback Generator
     return `https://placehold.co/600x400/e2e8f0/1e293b?text=${encodeURIComponent(cropName)}`
