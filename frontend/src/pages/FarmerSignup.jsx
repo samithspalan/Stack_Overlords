@@ -40,14 +40,14 @@ export default function FarmerSignup({ onNavigate, onSignupSuccess }) {
       const result = await authService.farmerSignup(name, email, password)
       
       if (result.user) {
-        setSuccessMessage('Signup successful! Redirecting to login...')
+        setSuccessMessage('Signup successful! Redirecting to dashboard...')
         setName('')
         setEmail('')
         setPassword('')
         setConfirmPassword('')
         setAgreed(false)
         setTimeout(() => {
-          onSignupSuccess ? onSignupSuccess() : onNavigate('farmer-login')
+          onNavigate('farmer-dashboard')
         }, 1500)
       } else {
         setError(result.message || 'Signup failed')

@@ -39,10 +39,57 @@ export const authService = {
         credentials: 'include',
         body: JSON.stringify({ Username: username, email, password })
       });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        return error;
+      }
+      
       return await response.json();
     } catch (error) {
       console.error('Signup error:', error);
-      throw error;
+      return {
+        message: error.message || 'Failed to connect to server. Please make sure the backend is running on port 5000.'
+      };
+    }
+  },
+
+  /**
+   * Sign up a new customer account
+   * @param {string} username - Customer's name
+   * @param {string} email - Customer email address
+   * @param {string} password - Account password (min 6 characters)
+   * @returns {Promise<Object>} Response with user data and success message
+   * 
+   * Success Response:
+   * {
+   *   "message": "User created successfully",
+   *   "user": { "_id": "...", "Username": "...", "email": "..." }
+   * }
+   * 
+   * Error Response:
+   * { "message": "User already exists" }
+   */
+  customerSignup: async (username, email, password) => {
+    try {
+      const response = await fetch(`${API_BASE}/auth/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ Username: username, email, password })
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        return error;
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Signup error:', error);
+      return {
+        message: error.message || 'Failed to connect to server. Please make sure the backend is running on port 5000.'
+      };
     }
   },
 
@@ -67,10 +114,54 @@ export const authService = {
         credentials: 'include',
         body: JSON.stringify({ email, password })
       });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        return error;
+      }
+      
       return await response.json();
     } catch (error) {
       console.error('Login error:', error);
-      throw error;
+      return {
+        message: error.message || 'Failed to connect to server. Please make sure the backend is running on port 5000.'
+      };
+    }
+  },
+
+  /**
+   * Log in to existing customer account
+   * @param {string} email - Account email
+   * @param {string} password - Account password
+   * @returns {Promise<Object>} Response with user data
+   * 
+   * Success Response:
+   * {
+   *   "user": { "_id": "...", "Username": "...", "email": "..." }
+   * }
+   * 
+   * The JWT token is automatically set in httpOnly cookie by the server
+   */
+  customerLogin: async (email, password) => {
+    try {
+      const response = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, password })
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        return error;
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Login error:', error);
+      return {
+        message: error.message || 'Failed to connect to server. Please make sure the backend is running on port 5000.'
+      };
     }
   },
 
@@ -86,10 +177,17 @@ export const authService = {
         method: 'POST',
         credentials: 'include'
       });
+      
+      if (!response.ok) {
+        console.log('Logout failed with status:', response.status);
+      }
+      
       return await response.json();
     } catch (error) {
       console.error('Logout error:', error);
-      throw error;
+      // Still return success even if the API call fails
+      // because we're going to clear localStorage anyway
+      return { message: 'Logged out' };
     }
   },
 
@@ -112,10 +210,18 @@ export const authService = {
         method: 'GET',
         credentials: 'include'
       });
-      return await response.json();
+      
+      if (!response.ok) {
+        console.log('Auth check failed with status:', response.status);
+        return { user: null };
+      }
+      
+      const data = await response.json();
+      console.log('getCurrentUser response:', data);
+      return data;
     } catch (error) {
       console.error('Get user error:', error);
-      throw error;
+      return { user: null };
     }
   },
 

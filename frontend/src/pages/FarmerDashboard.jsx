@@ -360,14 +360,16 @@ export default function FarmerDashboard({ onNavigate }) {
             {[
               { id: 'home', label: 'Home', icon: Home },
               { id: 'market-prices', label: 'Market Prices', icon: BarChart3 },
-              { id: 'buyers', label: 'Find Buyers', icon: Handshake },
+              { id: 'chats', label: 'Chats', icon: Bell },
               { id: 'listings', label: 'My Listings', icon: Store }
             ].map(item => (
               <button 
                 key={item.id}
                 onClick={() => {
-                  if ((item.id === 'market-prices' || item.id === 'buyers') && onNavigate) {
+                  if (item.id === 'market-prices' && onNavigate) {
                     onNavigate('market-analysis')
+                  } else if (item.id === 'chats' && onNavigate) {
+                    onNavigate('chats')
                   } else {
                     setActiveLink(item.id)
                     const element = document.getElementById(item.id)

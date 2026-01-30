@@ -180,7 +180,7 @@ export default function MarketAnalysis({ onBack }) {
   }
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 pt-20 ${isDark ? 'bg-slate-900 text-slate-100' : 'bg-linear-to-b from-green-50 via-white to-green-50'}`}>
+    <div className={`min-h-screen transition-colors duration-300 pt-5 ${isDark ? 'bg-slate-900 text-slate-100' : 'bg-linear-to-b from-green-50 via-white to-green-50'}`}>
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
         <div className="flex items-center justify-between mb-8">

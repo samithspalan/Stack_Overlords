@@ -1,18 +1,41 @@
 import { Sprout, Mail, Lock, ShoppingCart, Sun, Moon } from 'lucide-react'
 import { useState } from 'react'
 import { useTheme } from '../context/ThemeContext'
+import { authService } from '../services/authService'
 import BorderAnimatedContainer from '../../components/BorderAnimatedContainer'
 
-export default function CustomerLogin() {
+export default function CustomerLogin({ onNavigate, onLoginSuccess }) {
   const { isDark, toggleTheme } = useTheme()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
-    console.log('Customer Login:', { email, password })
-    window.location.hash = '#home'
+    setLoading(true)
+    setError('')
+    
+    try {
+      const result = await authService.customerLogin(email, password)
+      
+      if (result.user) {
+        console.log('Customer Login Success:', result.user)
+        // Clear form
+        setEmail('')
+        setPassword('')
+        // Navigate to customer dashboard
+        onLoginSuccess ? onLoginSuccess('customer') : onNavigate('customer-dashboard')
+      } else {
+        setError(result.message || 'Login failed')
+      }
+    } catch (error) {
+      console.error('Login error:', error)
+      setError(error.message || 'An error occurred during login')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -114,19 +137,40 @@ export default function CustomerLogin() {
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" className="w-4 h-4 border-teal-300 rounded" />
-                <span className="text-gray-700">Remember me</span>
+                <span className={isDark ? 'text-slate-400' : 'text-gray-700'}>Remember me</span>
               </label>
               <a href="#" className="text-teal-600 hover:text-teal-700 font-medium">
                 Forgot Password?
               </a>
             </div>
 
+            {/* Error Message */}
+            {error && (
+              <div className={`p-3 rounded-lg text-sm font-medium ${
+                isDark
+                  ? 'bg-red-900/30 text-red-400 border border-red-800/50'
+                  : 'bg-red-50 text-red-700 border border-red-200'
+              }`}>
+                {error}
+              </div>
+            )}
+
             {/* Login Button */}
             <button
               type="submit"
-              className="w-full bg-linear-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold py-3 rounded-lg transition-all duration-300 shadow-lg"
+              disabled={loading}
+              className={`w-full bg-linear-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold py-3 rounded-lg transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${
+                loading ? 'opacity-50' : ''
+              }`}
             >
-              Login as Customer
+              {loading ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  Logging in...
+                </>
+              ) : (
+                'Login as Customer'
+              )}
             </button>
           </form>
 

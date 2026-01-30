@@ -3,16 +3,19 @@ import { ThemeProvider } from './context/ThemeContext'
 import { authService } from './services/authService'
 import HomePage from './pages/HomePage'
 import FarmerDashboard from './pages/FarmerDashboard'
+import CustomerDashboard from './pages/CustomerDashboard'
 import MarketAnalysis from './pages/MarketAnalysis'
 import AboutPage from './pages/AboutPage'
 import FarmerLogin from './pages/FarmerLogin'
 import CustomerLogin from './pages/CustomerLogin'
 import FarmerSignup from './pages/FarmerSignup'
 import CustomerSignup from './pages/CustomerSignup'
+import ChatsPage from './pages/ChatsPage'
 
 function App() {
   const [currentPage, setCurrentPage] = useState(window.location.hash.slice(1) || 'home')
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [userType, setUserType] = useState(null) // 'farmer' or 'customer'
   const [loading, setLoading] = useState(true)
 
   // Check if user is authenticated on mount
@@ -20,13 +23,34 @@ function App() {
     const checkAuth = async () => {
       try {
         const response = await authService.getCurrentUser()
-        if (response.user) {
+        console.log('Auth check response:', response)
+        
+        // Check if response has user data (successful auth)
+        if (response && response.user) {
+          console.log('User authenticated:', response.user)
           setIsAuthenticated(true)
+          
+          // Get userType from localStorage
+          const storedUserType = localStorage.getItem('userType')
+          if (storedUserType) {
+            console.log('Setting userType:', storedUserType)
+            setUserType(storedUserType)
+            // Redirect to appropriate dashboard
+            const dashboard = storedUserType === 'customer' ? 'customer-dashboard' : 'farmer-dashboard'
+            window.location.hash = dashboard
+            setCurrentPage(dashboard)
+          }
         } else {
+          console.log('User not authenticated')
           setIsAuthenticated(false)
+          setUserType(null)
+          localStorage.removeItem('userType')
         }
       } catch (error) {
+        console.error('Auth check error:', error)
         setIsAuthenticated(false)
+        setUserType(null)
+        localStorage.removeItem('userType')
       } finally {
         setLoading(false)
       }
@@ -41,9 +65,13 @@ function App() {
       const hash = window.location.hash.slice(1)
       
       // Check if trying to access protected routes
-      if ((hash === 'farmer-dashboard' || hash === 'market-analysis') && !isAuthenticated && !loading) {
-        setCurrentPage('farmer-login')
-        window.location.hash = 'farmer-login'
+      if ((hash === 'farmer-dashboard' || hash === 'market-analysis' || hash === 'chats') && !isAuthenticated && !loading) {
+        const loginPage = hash === 'farmer-dashboard' || hash === 'market-analysis' ? 'farmer-login' : 'customer-login'
+        setCurrentPage(loginPage)
+        window.location.hash = loginPage
+      } else if (hash === 'customer-dashboard' && !isAuthenticated && !loading) {
+        setCurrentPage('customer-login')
+        window.location.hash = 'customer-login'
       } else {
         setCurrentPage(hash || 'home')
       }
@@ -62,6 +90,12 @@ function App() {
       setCurrentPage('farmer-login')
       return
     }
+
+    if (page === 'customer-dashboard' && !isAuthenticated) {
+      window.location.hash = 'customer-login'
+      setCurrentPage('customer-login')
+      return
+    }
     
     window.location.hash = page
     setCurrentPage(page)
@@ -71,6 +105,8 @@ function App() {
     try {
       await authService.logout()
       setIsAuthenticated(false)
+      setUserType(null)
+      localStorage.removeItem('userType')
       window.location.hash = 'home'
       setCurrentPage('home')
     } catch (error) {
@@ -78,10 +114,17 @@ function App() {
     }
   }
 
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = (type = 'farmer') => {
     setIsAuthenticated(true)
-    window.location.hash = 'farmer-dashboard'
-    setCurrentPage('farmer-dashboard')
+    setUserType(type)
+    localStorage.setItem('userType', type)
+    const dashboard = type === 'customer' ? 'customer-dashboard' : 'farmer-dashboard'
+    window.location.hash = dashboard
+    setCurrentPage(dashboard)
+  }
+
+  const handleCustomerLoginSuccess = (type = 'customer') => {
+    handleLoginSuccess(type)
   }
 
   if (loading) {
@@ -98,27 +141,39 @@ function App() {
     <ThemeProvider>
       <div>
         {currentPage === 'farmer-dashboard' ? (
-          isAuthenticated ? (
+          isAuthenticated && userType === 'farmer' ? (
             <FarmerDashboard onNavigate={handleNavigate} onLogout={handleLogout} />
           ) : (
             <FarmerLogin onNavigate={handleNavigate} onLoginSuccess={handleLoginSuccess} />
           )
+        ) : currentPage === 'customer-dashboard' ? (
+          isAuthenticated && userType === 'customer' ? (
+            <CustomerDashboard onNavigate={handleNavigate} onLogout={handleLogout} />
+          ) : (
+            <CustomerLogin onNavigate={handleNavigate} onLoginSuccess={handleCustomerLoginSuccess} />
+          )
         ) : currentPage === 'market-analysis' ? (
-          isAuthenticated ? (
+          isAuthenticated && userType === 'farmer' ? (
             <MarketAnalysis onBack={() => handleNavigate('farmer-dashboard')} onLogout={handleLogout} />
           ) : (
             <FarmerLogin onNavigate={handleNavigate} onLoginSuccess={handleLoginSuccess} />
+          )
+        ) : currentPage === 'chats' ? (
+          isAuthenticated ? (
+            <ChatsPage onBack={() => handleNavigate(userType === 'customer' ? 'customer-dashboard' : 'farmer-dashboard')} userType={userType} />
+          ) : (
+            <HomePage />
           )
         ) : currentPage === 'about' ? (
           <AboutPage />
         ) : currentPage === 'farmer-login' ? (
           <FarmerLogin onNavigate={handleNavigate} onLoginSuccess={handleLoginSuccess} />
         ) : currentPage === 'customer-login' ? (
-          <CustomerLogin />
+          <CustomerLogin onNavigate={handleNavigate} onLoginSuccess={handleCustomerLoginSuccess} />
         ) : currentPage === 'farmer-signup' ? (
-          <FarmerSignup onNavigate={handleNavigate} onSignupSuccess={() => handleNavigate('farmer-login')} />
+          <FarmerSignup onNavigate={handleNavigate} onSignupSuccess={() => handleLoginSuccess('farmer')} />
         ) : currentPage === 'customer-signup' ? (
-          <CustomerSignup />
+          <CustomerSignup onNavigate={handleNavigate} onSignupSuccess={() => handleLoginSuccess('customer')} />
         ) : (
           <HomePage />
         )}

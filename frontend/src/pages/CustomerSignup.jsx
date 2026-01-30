@@ -1,9 +1,10 @@
 import { Sprout, Mail, Lock, User, ShoppingCart, Sun, Moon } from 'lucide-react'
 import { useState } from 'react'
 import { useTheme } from '../context/ThemeContext'
+import { authService } from '../services/authService'
 import BorderAnimatedContainer from '../../components/BorderAnimatedContainer'
 
-export default function CustomerSignup() {
+export default function CustomerSignup({ onNavigate, onSignupSuccess }) {
   const { isDark, toggleTheme } = useTheme()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -11,12 +12,58 @@ export default function CustomerSignup() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [agreed, setAgreed] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault()
-    console.log('Customer Signup:', { name, email, password, confirmPassword })
-    // Navigate to customer login after signup
-    window.location.hash = '#customer-login'
+    
+    if (!name || !email || !password || !confirmPassword) {
+      setError('Please fill all fields')
+      return
+    }
+    
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long')
+      return
+    }
+    
+    if (!agreed) {
+      setError('Please agree to the Terms of Service')
+      return
+    }
+    
+    setLoading(true)
+    setError('')
+    
+    try {
+      const result = await authService.customerSignup(name, email, password)
+      
+      if (result.user) {
+        setSuccessMessage('Signup successful! Redirecting to dashboard...')
+        setName('')
+        setEmail('')
+        setPassword('')
+        setConfirmPassword('')
+        setAgreed(false)
+        setTimeout(() => {
+          onSignupSuccess ? onSignupSuccess('customer') : onNavigate('customer-dashboard')
+        }, 1000)
+      } else {
+        setError(result.message || 'Signup failed')
+      }
+    } catch (error) {
+      console.error('Signup error:', error)
+      setError(error.message || 'An error occurred during signup')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
