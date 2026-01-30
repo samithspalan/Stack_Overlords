@@ -15,6 +15,8 @@ export default function FarmerDashboard({ onNavigate }) {
   const [priceUnit, setPriceUnit] = useState('kg')
   const [activeCommodity, setActiveCommodity] = useState(null)
   const [imageErrors, setImageErrors] = useState({})
+  const [topGainer, setTopGainer] = useState(null)
+  const [topLoser, setTopLoser] = useState(null)
   const [activeImageError, setActiveImageError] = useState(false)
 
   // Fetch Data from Backend
@@ -32,9 +34,55 @@ export default function FarmerDashboard({ onNavigate }) {
     }
   }
 
+  // Calculate top gainer and loser based on price spread
+  const calculateGainersLosers = (prices) => {
+    if (prices.length === 0) return
+
+    const commodityStats = {}
+
+    // Group by commodity and calculate average prices
+    prices.forEach(item => {
+      if (!commodityStats[item.commodity]) {
+        commodityStats[item.commodity] = {
+          totalMax: 0,
+          totalMin: 0,
+          totalModal: 0,
+          count: 0
+        }
+      }
+      commodityStats[item.commodity].totalMax += parseFloat(item.max_price) || 0
+      commodityStats[item.commodity].totalMin += parseFloat(item.min_price) || 0
+      commodityStats[item.commodity].totalModal += parseFloat(item.modal_price) || 0
+      commodityStats[item.commodity].count += 1
+    })
+
+    // Calculate percentage changes
+    const changes = Object.entries(commodityStats).map(([commodity, stats]) => {
+      const avgMax = stats.totalMax / stats.count
+      const avgMin = stats.totalMin / stats.count
+      const changePercent = avgMin > 0 ? ((avgMax - avgMin) / avgMin) * 100 : 0
+      return {
+        commodity,
+        changePercent: parseFloat(changePercent.toFixed(2)),
+        avgPrice: (stats.totalModal / stats.count).toFixed(2)
+      }
+    })
+
+    // Find top gainer and loser
+    const sorted = changes.sort((a, b) => b.changePercent - a.changePercent)
+    if (sorted.length > 0) {
+      setTopGainer(sorted[0])
+      setTopLoser(sorted[sorted.length - 1])
+    }
+  }
+
   useEffect(() => {
     fetchMarketData()
   }, [])
+
+  useEffect(() => {
+    calculateGainersLosers(marketPrices)
+  }, [marketPrices])
 
   // Helper: Get Unique values for filters
   const getUniqueValues = (key) => {
@@ -445,12 +493,12 @@ export default function FarmerDashboard({ onNavigate }) {
                    </div>
                    <div>
                       <p className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Top Gainer</p>
-                      <p className={`font-bold ${isDark ? 'text-slate-100' : 'text-slate-700'}`}>Arecanut</p>
+                      <p className={`font-bold ${isDark ? 'text-slate-100' : 'text-slate-700'}`}>{topGainer?.commodity || 'Loading...'}</p>
                    </div>
                 </div>
                 <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-bold text-emerald-600">+12%</span>
-                    <span className="text-xs font-bold text-emerald-600/70">this week</span>
+                    <span className="text-2xl font-bold text-emerald-600">{topGainer ? `+${topGainer.changePercent}%` : '-'}</span>
+                    <span className="text-xs font-bold text-emerald-600/70">price spread</span>
                 </div>
             </div>
 
@@ -468,12 +516,12 @@ export default function FarmerDashboard({ onNavigate }) {
                    </div>
                    <div>
                       <p className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Top Loser</p>
-                      <p className={`font-bold ${isDark ? 'text-slate-100' : 'text-slate-700'}`}>Tomato</p>
+                      <p className={`font-bold ${isDark ? 'text-slate-100' : 'text-slate-700'}`}>{topLoser?.commodity || 'Loading...'}</p>
                    </div>
                 </div>
                 <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-bold text-red-600">-5.2%</span>
-                    <span className="text-xs font-bold text-red-600/70">correction</span>
+                    <span className="text-2xl font-bold text-red-600">{topLoser ? `${topLoser.changePercent}%` : '-'}</span>
+                    <span className="text-xs font-bold text-red-600/70">price spread</span>
                 </div>
             </div>
 
