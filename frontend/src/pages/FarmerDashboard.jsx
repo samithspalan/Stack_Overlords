@@ -4,6 +4,7 @@ import { useState } from 'react'
 export default function FarmerDashboard() {
   const [selectedCrop, setSelectedCrop] = useState('all')
   const [selectedLocation, setSelectedLocation] = useState('mangalore')
+  const [activeLink, setActiveLink] = useState('market-prices')
 
   // Dummy market prices data
   const marketPrices = [
@@ -25,42 +26,62 @@ export default function FarmerDashboard() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 via-white to-green-50">
-      {/* Navigation Bar */}
-      <nav className="bg-white shadow-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <div className="flex items-center gap-2">
-              <Sprout className="w-8 h-8 text-green-600" />
-              <h1 className="text-2xl font-bold text-green-700">KisanSetu</h1>
-            </div>
+    <div className="min-h-screen bg-linear-to-b from-green-50 via-white to-green-50">
+      {/* Logo - Fixed in top-left corner */}
+      <div className="fixed top-6 left-6 z-50 flex items-center gap-2">
+        <Sprout className="w-8 h-8 text-green-600" />
+        <h1 className="text-2xl font-bold text-green-700">KisanSetu</h1>
+      </div>
 
-            {/* Center Navigation */}
-            <div className="hidden md:flex gap-8 items-center">
-              <a href="#home" className="text-gray-700 hover:text-green-600 font-medium transition">Home</a>
-              <a href="#" className="text-gray-700 hover:text-green-600 font-medium transition">Market Prices</a>
-              <a href="#" className="text-gray-700 hover:text-green-600 font-medium transition">Find Buyers</a>
-              <a href="#" className="text-gray-700 hover:text-green-600 font-medium transition">My Listings</a>
-            </div>
-
-            {/* Right Side */}
-            <div className="flex items-center gap-4">
-              <button className="p-2 relative">
-                <Bell className="w-6 h-6 text-gray-700 hover:text-green-600" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-              </button>
-              <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition flex items-center gap-2">
-                <User className="w-4 h-4" />
-                Profile
-              </button>
-            </div>
+      {/* Navigation Bar - Centered at top, sticky, transparent */}
+      <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 z-40">
+        <div className="bg-white/30 backdrop-blur-md rounded-full px-6 py-2 shadow-lg border border-white/20">
+          <div className="flex gap-6 items-center">
+            <a 
+              href="#home" 
+              onClick={() => setActiveLink('home')}
+              className={`font-medium transition-all duration-300 px-3 py-2 rounded-lg ${
+                activeLink === 'home' ? 'bg-green-600 text-white' : 'text-gray-700 hover:text-green-600'
+              }`}
+            >
+              Home
+            </a>
+            <a 
+              href="#" 
+              onClick={() => setActiveLink('market-prices')}
+              className={`font-medium transition-all duration-300 px-3 py-2 rounded-lg ${
+                activeLink === 'market-prices' ? 'bg-green-600 text-white' : 'text-gray-700 hover:text-green-600'
+              }`}
+            >
+              Market Prices
+            </a>
+            <a 
+              href="#" 
+              onClick={() => setActiveLink('buyers')}
+              className={`font-medium transition-all duration-300 px-3 py-2 rounded-lg ${
+                activeLink === 'buyers' ? 'bg-green-600 text-white' : 'text-gray-700 hover:text-green-600'
+              }`}
+            >
+              Find Buyers
+            </a>
+            <a 
+              href="#" 
+              onClick={() => setActiveLink('listings')}
+              className={`font-medium transition-all duration-300 px-3 py-2 rounded-lg ${
+                activeLink === 'listings' ? 'bg-green-600 text-white' : 'text-gray-700 hover:text-green-600'
+              }`}
+            >
+              My Listings
+            </a>
           </div>
         </div>
       </nav>
 
+      {/* Top Spacing for fixed navbar */}
+      <div className="h-20"></div>
+
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-green-600 to-emerald-600 text-white py-16">
+      <section className="relative bg-linear-to-r from-green-600 to-emerald-600 text-white py-12">
         <div className="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2760%27%20height%3D%2760%27%20viewBox%3D%270%200%2060%2060%27%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%3E%3Cg%20fill%3D%27none%27%20fill-rule%3D%27evenodd%27%3E%3Cg%20fill%3D%27%23ffffff%27%20fill-opacity%3D%270.1%27%3E%3Cpath%20d%3D%27M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%27/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-5xl md:text-6xl font-bold mb-4">
@@ -81,7 +102,7 @@ export default function FarmerDashboard() {
       </section>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid lg:grid-cols-3 gap-8 mb-12">
           {/* Left Column - Market Prices */}
           <div className="lg:col-span-2">
@@ -174,7 +195,7 @@ export default function FarmerDashboard() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-r from-green-700 to-emerald-700 text-white py-8 mt-16">
+      <footer className="bg-linear-to-r from-green-700 to-emerald-700 text-white py-6 mt-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p>&copy; 2026 KisanSetu. Empowering farmers, one connection at a time.</p>
         </div>

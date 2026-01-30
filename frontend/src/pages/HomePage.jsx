@@ -1,25 +1,63 @@
 import { Sprout, Shield, ShoppingCart } from 'lucide-react'
+import { useState } from 'react'
 
 export default function HomePage() {
+  const [activeLink, setActiveLink] = useState('')
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 via-white to-green-50">
-      {/* Navigation Bar */}
-      <nav className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Sprout className="w-8 h-8 text-green-600" />
-            <h2 className="text-2xl font-bold text-green-700">KisanSetu</h2>
-          </div>
-          <div className="hidden md:flex gap-8 text-gray-700">
-            <a href="#about" className="hover:text-green-600 transition">About</a>
-            <a href="#features" className="hover:text-green-600 transition">Features</a>
-            <a href="#contact" className="hover:text-green-600 transition">Contact</a>
+    <div className="min-h-screen bg-linear-to-b from-green-50 via-white to-green-50">
+      {/* Logo - Fixed in top-left corner */}
+      <div className="fixed top-6 left-6 z-50 flex items-center gap-2">
+        <Sprout className="w-8 h-8 text-green-600" />
+        <h2 className="text-2xl font-bold text-green-700">KisanSetu</h2>
+      </div>
+
+      {/* Navigation Bar - Centered at top, sticky, transparent */}
+      <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 z-40">
+        <div className="bg-white/30 backdrop-blur-md rounded-full px-6 py-2 shadow-lg border border-white/20">
+          <div className="flex gap-8 items-center">
+            <a 
+              href="#home" 
+              onClick={() => setActiveLink('home')}
+              className={`font-medium transition-all duration-300 px-3 py-2 rounded-lg ${
+                activeLink === 'home' ? 'bg-green-600 text-white' : 'text-gray-700 hover:text-green-600'
+              }`}
+            >
+              Home
+            </a>
+            <a 
+              href="#about" 
+              onClick={() => setActiveLink('about')}
+              className={`font-medium transition-all duration-300 px-3 py-2 rounded-lg ${
+                activeLink === 'about' ? 'bg-green-600 text-white' : 'text-gray-700 hover:text-green-600'
+              }`}
+            >
+              About
+            </a>
+            <a 
+              href="#features" 
+              onClick={() => setActiveLink('features')}
+              className={`font-medium transition-all duration-300 px-3 py-2 rounded-lg ${
+                activeLink === 'features' ? 'bg-green-600 text-white' : 'text-gray-700 hover:text-green-600'
+              }`}
+            >
+              Features
+            </a>
+            <a 
+              href="#contact" 
+              onClick={() => setActiveLink('contact')}
+              className={`font-medium transition-all duration-300 px-3 py-2 rounded-lg ${
+                activeLink === 'contact' ? 'bg-green-600 text-white' : 'text-gray-700 hover:text-green-600'
+              }`}
+            >
+              Contact
+            </a>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 md:py-32">
+      <section className="relative overflow-hidden py-12 md:py-20">
         <div className="absolute top-0 right-0 -mr-40 -mt-40 w-80 h-80 bg-green-100 rounded-full opacity-50"></div>
         <div className="absolute bottom-0 left-0 -ml-40 -mb-40 w-80 h-80 bg-emerald-100 rounded-full opacity-50"></div>
 
@@ -45,7 +83,7 @@ export default function HomePage() {
       </section>
 
       {/* Login Cards Section */}
-      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             Select Your Role
@@ -58,9 +96,9 @@ export default function HomePage() {
         {/* Login Cards Grid */}
         <div className="grid md:grid-cols-3 gap-8 mb-12">
           {/* Farmer Card */}
-          <a href="/farmer-login" className="group block">
+          <a href="#farmer-dashboard" className="group block">
             <div className="h-full bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:scale-105 overflow-hidden">
-              <div className="bg-gradient-to-br from-green-400 to-green-600 p-8 relative overflow-hidden">
+              <div className="bg-linear-to-br from-green-400 to-green-600 p-8 relative overflow-hidden">
                 <div className="absolute top-0 right-0 -mr-20 -mt-20 w-40 h-40 bg-white opacity-10 rounded-full"></div>
                 <Sprout className="w-16 h-16 text-white relative z-10" strokeWidth={1.5} />
               </div>
@@ -69,7 +107,7 @@ export default function HomePage() {
                 <p className="text-gray-600 mb-6 leading-relaxed">
                   Access your farm profile and connect directly with markets
                 </p>
-                <button className="w-full bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300">
+                <button className="w-full bg-linear-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300">
                   Login as Farmer
                 </button>
               </div>
@@ -130,7 +168,7 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-white">
+      <section id="features" className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -168,7 +206,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-r from-green-700 to-emerald-700 text-white py-12">
+      <footer className="bg-linear-to-r from-green-700 to-emerald-700 text-white py-8 mt-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             <div>
