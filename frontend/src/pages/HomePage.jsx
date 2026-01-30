@@ -221,7 +221,12 @@ export default function HomePage() {
             </a>
             <a 
               href="#features" 
-              onClick={() => setActiveLink('features')}
+              onClick={(e) => {
+                e.preventDefault()
+                setActiveLink('features')
+                const element = document.getElementById('features')
+                element?.scrollIntoView({ behavior: 'smooth' })
+              }}
               className={`font-medium transition-all duration-300 px-3 py-2 rounded-lg ${
                 activeLink === 'features' ? 'bg-green-600 text-white' : 'text-gray-700 hover:text-green-600'
               }`}
@@ -263,11 +268,18 @@ export default function HomePage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-20">
-             <a href="#login-section" className="group bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-xl shadow-emerald-200 hover:shadow-emerald-300 flex items-center gap-2">
+             <a href="#about" className="group bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-xl shadow-emerald-200 hover:shadow-emerald-300 flex items-center gap-2">
                Connect Now
                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
              </a>
-             <button className="group bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:border-emerald-200 flex items-center gap-2">
+             <button
+               onClick={() => {
+                 setActiveLink('features')
+                 const element = document.getElementById('features')
+                 element?.scrollIntoView({ behavior: 'smooth' })
+               }}
+               className="group bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:border-emerald-200 flex items-center gap-2"
+             >
                Learn More
              </button>
           </div>
@@ -294,6 +306,17 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="py-20 z-10 relative">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">About KisanSetu</h2>
+          <p className="text-slate-600 text-lg leading-relaxed">
+            KisanSetu connects farmers and buyers with transparent pricing, real-time market insights, and
+            smarter supply chain decisions—helping growers earn more while delivering fresher produce.
+          </p>
         </div>
       </section>
 
