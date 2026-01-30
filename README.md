@@ -98,7 +98,23 @@ This approach transforms KisanSetu into a decision-support and empowerment platf
 
 ### Installation
 
-Clone the repository:
-```bash
-git clone [<repository-url>](https://github.com/samithspalan/Stack-Overlords)
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/samithspalan/Stack-Overlords.git
+   cd Stack-Overlords
+   ```
+
+2. **Backend Setup:**
+   ```bash
+   cd backend
+   npm install
+   node server.js
+   ```
+
+3. **Frontend Setup:**
+   ```bash
+   cd ../frontend
+   npm install
+   npm run dev
+   ```
 
