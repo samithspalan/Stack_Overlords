@@ -66,20 +66,6 @@ export default function AboutPage() {
       {/* Top Spacing for fixed navbar */}
       <div className="h-24"></div>
 
-      {/* About Hero Section */}
-      <section className="relative py-12 z-10">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <span className="inline-block py-1 px-3 rounded-full bg-green-100 text-green-600 text-sm font-semibold mb-4">
-            Our Mission
-          </span>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
-            Cultivating <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">Innovation</span>
-          </h1>
-          <p className="text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto">
-            We are a passionate team dedicated to bridging the gap between farmers and markets through innovative technology solutions. Building a sustainable future for agriculture.
-          </p>
-        </div>
-      </section>
 
       {/* Team Section */}
       <section className="relative py-16 z-10 px-4">
