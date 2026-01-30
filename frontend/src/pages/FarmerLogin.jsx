@@ -1,9 +1,11 @@
-import { Sprout, Mail, Lock } from 'lucide-react'
+import { Sprout, Mail, Lock, Sun, Moon } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
+import { useTheme } from '../context/ThemeContext'
 import BorderAnimatedContainer from '../../components/BorderAnimatedContainer'
 
 export default function FarmerLogin() {
+  const { isDark, toggleTheme } = useTheme()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -46,39 +48,60 @@ export default function FarmerLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-green-50 via-white to-green-50 flex items-center justify-center">
+    <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
+      isDark 
+        ? 'bg-slate-900' 
+        : 'bg-linear-to-br from-green-50 via-white to-green-50'
+    }`}>
       {/* Logo - Top left */}
       <div className="fixed top-6 left-6 z-50 flex items-center gap-2">
         <Sprout className="w-8 h-8 text-green-600" />
-        <h2 className="text-2xl font-bold text-green-700">KisanSetu</h2>
+        <h2 className={`text-2xl font-bold ${isDark ? 'text-green-400' : 'text-green-700'}`}>KisanSetu</h2>
       </div>
 
-      {/* Back Button */}
-      <a 
-        href="#home"
-        className="fixed top-6 right-6 z-50 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300"
-      >
-        ← Back
-      </a>
+      {/* Back Button & Theme Toggle */}
+      <div className="fixed top-6 right-6 z-50 flex items-center gap-3">
+        <button
+          onClick={toggleTheme}
+          className={`p-2 rounded-full transition-all duration-300 ${
+            isDark
+              ? 'bg-slate-800 text-yellow-400 hover:bg-slate-700'
+              : 'bg-white text-slate-700 hover:bg-slate-100'
+          }`}
+          title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+        >
+          {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </button>
+        <a 
+          href="#home"
+          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300"
+        >
+          ← Back
+        </a>
+      </div>
 
       {/* Login Container */}
       <div className="w-full max-w-md px-4">
         <BorderAnimatedContainer>
-          <div className="bg-white rounded-3xl shadow-2xl border border-green-100 p-10 w-full">
+          <div className={`rounded-3xl shadow-2xl border p-10 w-full transition-colors duration-300 ${
+            isDark
+              ? 'bg-slate-800 border-slate-700'
+              : 'bg-white border-green-100'
+          }`}>
           {/* Header */}
           <div className="text-center mb-10">
             <div className="w-16 h-16 bg-linear-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <Sprout className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Farmer Login</h1>
-            <p className="text-gray-600">Access your farm dashboard</p>
+            <h1 className={`text-3xl font-bold mb-2 ${isDark ? 'text-slate-100' : 'text-gray-900'}`}>Farmer Login</h1>
+            <p className={isDark ? 'text-slate-400' : 'text-gray-600'}>Access your farm dashboard</p>
           </div>
 
           {/* Login Form */}
           <form onSubmit={handleLogin} className="space-y-6">
             {/* Email Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-slate-300' : 'text-gray-700'}`}>
                 Email Address
               </label>
               <div className="relative">
@@ -88,14 +111,18 @@ export default function FarmerLogin() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="farmer@example.com"
-                  className="w-full pl-10 pr-4 py-3 border border-green-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent transition-colors ${
+                    isDark
+                      ? 'bg-slate-700 border-slate-600 text-slate-100 placeholder-slate-400'
+                      : 'border-green-200 text-gray-900'
+                  }`}
                 />
               </div>
             </div>
 
             {/* Password Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-slate-300' : 'text-gray-700'}`}>
                 Password
               </label>
               <div className="relative">

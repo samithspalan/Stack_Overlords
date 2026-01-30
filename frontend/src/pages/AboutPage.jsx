@@ -1,11 +1,13 @@
-import { Sprout, Linkedin, Github, Leaf } from 'lucide-react'
+import { Sprout, Linkedin, Github, Leaf, Sun, Moon } from 'lucide-react'
 import { useState } from 'react'
+import { useTheme } from '../context/ThemeContext'
 import profile1 from '../assets/profile1.jpeg'
 import profile2 from '../assets/profile2.jpg'
 import profile3 from '../assets/profile3.jpeg'
 import profile4 from '../assets/profile4.jpeg'
 
 export default function AboutPage() {
+  const { isDark, toggleTheme } = useTheme()
   const [activeLink, setActiveLink] = useState('about')
 
   const teamMembers = [
@@ -16,22 +18,28 @@ export default function AboutPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className={`min-h-screen transition-colors duration-300 ${
+      isDark ? 'bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'
+    }`}>
       {/* Logo - Fixed in top-left corner */}
       <div className="fixed top-6 left-6 z-50 flex items-center gap-2">
         <Sprout className="w-8 h-8 text-green-600" />
-        <h2 className="text-2xl font-bold text-green-700">KisanSetu</h2>
+        <h2 className={`text-2xl font-bold ${isDark ? 'text-green-400' : 'text-green-700'}`}>KisanSetu</h2>
       </div>
 
       {/* Navigation Bar - Centered at top, sticky, transparent */}
-      <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 z-40">
-        <div className="bg-white/80 backdrop-blur-md rounded-full px-6 py-2 shadow-lg border border-white/20">
+      <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 z-40 flex items-center gap-4">
+        <div className={`backdrop-blur-md rounded-full px-6 py-2 shadow-lg border transition-colors duration-300 ${
+          isDark
+            ? 'bg-slate-800/80 border-slate-700/20'
+            : 'bg-white/80 border-white/20'
+        }`}>
           <div className="flex gap-8 items-center">
             <a 
               href="#home" 
               onClick={() => setActiveLink('home')}
               className={`font-medium transition-all duration-300 px-3 py-2 rounded-lg ${
-                activeLink === 'home' ? 'bg-green-600 text-white' : 'text-gray-700 hover:text-green-600'
+                activeLink === 'home' ? 'bg-green-600 text-white' : isDark ? 'text-slate-300 hover:text-green-400' : 'text-gray-700 hover:text-green-600'
               }`}
             >
               Home
@@ -40,7 +48,7 @@ export default function AboutPage() {
               href="#about" 
               onClick={() => setActiveLink('about')}
               className={`font-medium transition-all duration-300 px-3 py-2 rounded-lg ${
-                activeLink === 'about' ? 'bg-green-600 text-white' : 'text-gray-700 hover:text-green-600'
+                activeLink === 'about' ? 'bg-green-600 text-white' : isDark ? 'text-slate-300 hover:text-green-400' : 'text-gray-700 hover:text-green-600'
               }`}
             >
               About
@@ -49,7 +57,7 @@ export default function AboutPage() {
               href="#features" 
               onClick={() => setActiveLink('features')}
               className={`font-medium transition-all duration-300 px-3 py-2 rounded-lg ${
-                activeLink === 'features' ? 'bg-green-600 text-white' : 'text-gray-700 hover:text-green-600'
+                activeLink === 'features' ? 'bg-green-600 text-white' : isDark ? 'text-slate-300 hover:text-green-400' : 'text-gray-700 hover:text-green-600'
               }`}
             >
               Features
@@ -58,13 +66,25 @@ export default function AboutPage() {
               href="#contact" 
               onClick={() => setActiveLink('contact')}
               className={`font-medium transition-all duration-300 px-3 py-2 rounded-lg ${
-                activeLink === 'contact' ? 'bg-green-600 text-white' : 'text-gray-700 hover:text-green-600'
+                activeLink === 'contact' ? 'bg-green-600 text-white' : isDark ? 'text-slate-300 hover:text-green-400' : 'text-gray-700 hover:text-green-600'
               }`}
             >
               Contact
             </a>
           </div>
         </div>
+        {/* Theme Toggle Button */}
+        <button
+          onClick={toggleTheme}
+          className={`p-2 rounded-full transition-all duration-300 backdrop-blur-md shadow-lg border ${
+            isDark
+              ? 'bg-slate-800 text-yellow-400 hover:bg-slate-700 border-slate-700'
+              : 'bg-white text-slate-700 hover:bg-slate-100 border-white/20'
+          }`}
+          title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+        >
+          {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </button>
       </nav>
 
       {/* Top Spacing for fixed navbar */}
@@ -83,7 +103,9 @@ export default function AboutPage() {
             {teamMembers.map((member) => (
               <div 
                 key={member.id}
-                className="group relative h-80 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border border-slate-100 perspective-[1000px]"
+                className={`group relative h-80 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border perspective-[1000px] ${
+                  isDark ? 'border-slate-700' : 'border-slate-100'
+                }`}
               >
                 <div className="absolute inset-0 transition-transform duration-500 transform-3d group-hover:transform-[rotateY(180deg)]">
                   {/* Front Side */}

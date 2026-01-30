@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { ThemeProvider } from './context/ThemeContext'
 import HomePage from './pages/HomePage'
 import FarmerDashboard from './pages/FarmerDashboard'
 import MarketAnalysis from './pages/MarketAnalysis'
@@ -30,25 +31,27 @@ function App() {
   }
 
   return (
-    <div>
-      {currentPage === 'farmer-dashboard' ? (
-        <FarmerDashboard onNavigate={handleNavigate} />
-      ) : currentPage === 'market-analysis' ? (
-        <MarketAnalysis onBack={() => handleNavigate('farmer-dashboard')} />
-      ) : currentPage === 'about' ? (
-        <AboutPage />
-      ) : currentPage === 'farmer-login' ? (
-        <FarmerLogin />
-      ) : currentPage === 'customer-login' ? (
-        <CustomerLogin />
-      ) : currentPage === 'farmer-signup' ? (
-        <FarmerSignup />
-      ) : currentPage === 'customer-signup' ? (
-        <CustomerSignup />
-      ) : (
-        <HomePage />
-      )}
-    </div>
+    <ThemeProvider>
+      <div>
+        {currentPage === 'farmer-dashboard' ? (
+          <FarmerDashboard onNavigate={handleNavigate} />
+        ) : currentPage === 'market-analysis' ? (
+          <MarketAnalysis onBack={() => handleNavigate('farmer-dashboard')} />
+        ) : currentPage === 'about' ? (
+          <AboutPage />
+        ) : currentPage === 'farmer-login' ? (
+          <FarmerLogin />
+        ) : currentPage === 'customer-login' ? (
+          <CustomerLogin />
+        ) : currentPage === 'farmer-signup' ? (
+          <FarmerSignup />
+        ) : currentPage === 'customer-signup' ? (
+          <CustomerSignup />
+        ) : (
+          <HomePage />
+        )}
+      </div>
+    </ThemeProvider>
   )
 }
 

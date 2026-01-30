@@ -6,14 +6,17 @@ import {
   Users, 
   TrendingUp, 
   Sun,
+  Moon,
   ArrowRight,
   HeartHandshake,
   Truck,
   Building2
 } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
+import { useTheme } from '../context/ThemeContext'
 
 export default function HomePage() {
+  const { isDark, toggleTheme } = useTheme()
   const [activeLink, setActiveLink] = useState('home')
   const canvasRef = useRef(null)
   const mousePos = useRef({ x: 0, y: 0 })
@@ -184,7 +187,11 @@ export default function HomePage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-slate-50 relative overflow-hidden font-sans text-slate-900 selection:bg-emerald-200 selection:text-emerald-900">
+    <div className={`min-h-screen relative overflow-hidden font-sans selection:bg-emerald-200 selection:text-emerald-900 transition-colors duration-300 ${
+      isDark 
+        ? 'bg-slate-900 text-slate-100' 
+        : 'bg-slate-50 text-slate-900'
+    }`}>
       
       {/* Background Canvas */}
       <canvas 
@@ -198,14 +205,18 @@ export default function HomePage() {
         <h2 className="text-2xl font-bold text-emerald-700">KisanSetu</h2>
       </div>
 
-      <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 z-40">
-        <div className="bg-white/30 backdrop-blur-md rounded-full px-6 py-2 shadow-lg border border-white/20">
+      <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 z-40 flex items-center gap-4">
+        <div className={`rounded-full px-6 py-2 shadow-lg border transition-colors duration-300 ${
+          isDark
+            ? 'bg-slate-800/30 backdrop-blur-md border-slate-700/20'
+            : 'bg-white/30 backdrop-blur-md border-white/20'
+        }`}>
           <div className="flex gap-12 items-center">
             <a 
               href="#home" 
               onClick={() => setActiveLink('home')}
               className={`font-medium transition-all duration-300 px-3 py-2 rounded-lg ${
-                activeLink === 'home' ? 'bg-green-600 text-white' : 'text-gray-700 hover:text-green-600'
+                activeLink === 'home' ? 'bg-green-600 text-white' : isDark ? 'text-slate-300 hover:text-green-400' : 'text-gray-700 hover:text-green-600'
               }`}
             >
               Home
@@ -214,7 +225,7 @@ export default function HomePage() {
               href="#about" 
               onClick={() => setActiveLink('about')}
               className={`font-medium transition-all duration-300 px-3 py-2 rounded-lg ${
-                activeLink === 'about' ? 'bg-green-600 text-white' : 'text-gray-700 hover:text-green-600'
+                activeLink === 'about' ? 'bg-green-600 text-white' : isDark ? 'text-slate-300 hover:text-green-400' : 'text-gray-700 hover:text-green-600'
               }`}
             >
               About
@@ -228,7 +239,7 @@ export default function HomePage() {
                 element?.scrollIntoView({ behavior: 'smooth' })
               }}
               className={`font-medium transition-all duration-300 px-3 py-2 rounded-lg ${
-                activeLink === 'features' ? 'bg-green-600 text-white' : 'text-gray-700 hover:text-green-600'
+                activeLink === 'features' ? 'bg-green-600 text-white' : isDark ? 'text-slate-300 hover:text-green-400' : 'text-gray-700 hover:text-green-600'
               }`}
             >
               Features
@@ -242,13 +253,26 @@ export default function HomePage() {
                 element?.scrollIntoView({ behavior: 'smooth' })
               }}
               className={`font-medium transition-all duration-300 px-3 py-2 rounded-lg ${
-                activeLink === 'contact' ? 'bg-green-600 text-white' : 'text-gray-700 hover:text-green-600'
+                activeLink === 'contact' ? 'bg-green-600 text-white' : isDark ? 'text-slate-300 hover:text-green-400' : 'text-gray-700 hover:text-green-600'
               }`}
             >
               Contact
             </a>
           </div>
         </div>
+
+        {/* Theme Toggle Button */}
+        <button
+          onClick={toggleTheme}
+          className={`p-2 rounded-full transition-all duration-300 ${
+            isDark
+              ? 'bg-slate-800 text-yellow-400 hover:bg-slate-700'
+              : 'bg-white text-slate-700 hover:bg-slate-100'
+          } shadow-lg border ${isDark ? 'border-slate-700' : 'border-white/20'}`}
+          title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+        >
+          {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </button>
       </nav>
 
       {/* Hero Section */}
@@ -256,22 +280,33 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
          
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-slate-900 mb-6 tracking-tight leading-tight">
+          <h1 className={`text-4xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight leading-tight ${
+            isDark ? 'text-slate-100' : 'text-slate-900'
+          }`}>
             Cultivating a <br />
             <span className="text-transparent bg-clip-text bg-linear-to-r from-emerald-600 via-teal-500 to-emerald-600">
               Better Future
             </span>
           </h1>
 
-          <p className="text-lg md:text-xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className={`text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed ${
+            isDark ? 'text-slate-400' : 'text-slate-600'
+          }`}>
             Directly connecting farmers with modern markets. Fair prices, transparent supply chains, and real-time insights for a thriving agricultural ecosystem.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-20">
-             <a href="#about" className="group bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-xl shadow-emerald-200 hover:shadow-emerald-300 flex items-center gap-2">
+             <button
+               onClick={() => {
+                 setActiveLink('login')
+                 const element = document.getElementById('login-section')
+                 element?.scrollIntoView({ behavior: 'smooth' })
+               }}
+               className="group bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-xl shadow-emerald-200 hover:shadow-emerald-300 flex items-center gap-2"
+             >
                Connect Now
                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-             </a>
+             </button>
              <button
                onClick={() => {
                  setActiveLink('features')
@@ -287,17 +322,21 @@ export default function HomePage() {
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {[
-              { label: 'Active Farmers', value: farmers, suffix: '+', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
-              { label: 'Weekly Volume', value: volume, suffix: ' Tons', icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-              { label: 'Partner Mandis', value: mandis, suffix: '+', icon: Building2, color: 'text-amber-600', bg: 'bg-amber-50' },
+              { label: 'Active Farmers', value: farmers, suffix: '+', icon: Users, color: 'text-blue-600', bg: isDark ? 'bg-blue-900/30' : 'bg-blue-50' },
+              { label: 'Weekly Volume', value: volume, suffix: ' Tons', icon: TrendingUp, color: 'text-emerald-600', bg: isDark ? 'bg-emerald-900/30' : 'bg-emerald-50' },
+              { label: 'Partner Mandis', value: mandis, suffix: '+', icon: Building2, color: 'text-amber-600', bg: isDark ? 'bg-amber-900/30' : 'bg-amber-50' },
             ].map((stat, idx) => (
-              <div key={idx} className="bg-white rounded-2xl p-8 border border-slate-100 shadow-sm hover:shadow-md transition-all">
+              <div key={idx} className={`rounded-2xl p-8 border shadow-sm hover:shadow-md transition-all ${
+                isDark 
+                  ? 'bg-slate-800 border-slate-700' 
+                  : 'bg-white border-slate-100'
+              }`}>
                 <div className="flex items-center justify-between pointer-events-none">
                   <div className="text-left">
-                    <p className="text-4xl font-bold text-slate-900 mb-2">
+                    <p className={`text-4xl font-bold mb-2 ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
                       {stat.value.toLocaleString()}{stat.suffix}
                     </p>
-                    <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">{stat.label}</p>
+                    <p className={`text-xs font-bold uppercase tracking-widest ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>{stat.label}</p>
                   </div>
                   <div className={`p-4 rounded-2xl ${stat.bg}`}>
                     <stat.icon className={`w-8 h-8 ${stat.color}`} strokeWidth={1.5} />
@@ -312,8 +351,8 @@ export default function HomePage() {
       {/* About Section */}
       <section id="about" className="py-20 z-10 relative">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">About KisanSetu</h2>
-          <p className="text-slate-600 text-lg leading-relaxed">
+          <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>About KisanSetu</h2>
+          <p className={`text-lg leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
             KisanSetu connects farmers and buyers with transparent pricing, real-time market insights, and
             smarter supply chain decisions—helping growers earn more while delivering fresher produce.
           </p>
@@ -327,10 +366,10 @@ export default function HomePage() {
         className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 z-10"
       >
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className={`text-4xl md:text-5xl font-bold mb-4 ${isDark ? 'text-slate-100' : 'text-gray-900'}`}>
             Select Your Role
           </h2>
-          <p className="text-gray-600 text-lg">
+          <p className={`text-lg ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>
             Choose your account type to get started
           </p>
         </div>
@@ -339,14 +378,16 @@ export default function HomePage() {
         <div key={rolesAnimationKey} className="grid md:grid-cols-2 gap-10 mb-12 max-w-4xl mx-auto">
           {/* Farmer Card */}
           <a href="#farmer-login" className={`group block ${animateRoles ? 'animate-slide-in-left' : 'opacity-0 -translate-x-8'}`}>
-            <div className="h-full bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:scale-105 overflow-hidden">
+            <div className={`h-full rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:scale-105 overflow-hidden ${
+              isDark ? 'bg-slate-800' : 'bg-white'
+            }`}>
               <div className="bg-linear-to-br from-green-400 to-green-600 p-8 relative overflow-hidden">
                 <div className="absolute top-0 right-0 -mr-20 -mt-20 w-40 h-40 bg-white opacity-10 rounded-full"></div>
                 <Sprout className="w-16 h-16 text-white relative z-10" strokeWidth={1.5} />
               </div>
               <div className="p-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">Farmer Login</h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">
+                <h3 className={`text-2xl font-bold mb-3 ${isDark ? 'text-slate-100' : 'text-gray-900'}`}>Farmer Login</h3>
+                <p className={`mb-6 leading-relaxed ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>
                   Access your farm profile and connect directly with markets
                 </p>
                 <button className="w-full bg-linear-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300">
@@ -358,14 +399,16 @@ export default function HomePage() {
             
           {/* Customer Card */}
           <a href="#customer-login" className={`group block ${animateRoles ? 'animate-slide-in-right' : 'opacity-0 translate-x-8'}`}>
-            <div className="h-full bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:scale-105 overflow-hidden">
+            <div className={`h-full rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:scale-105 overflow-hidden ${
+              isDark ? 'bg-slate-800' : 'bg-white'
+            }`}>
               <div className="bg-linear-to-br from-teal-400 to-teal-600 p-8 relative overflow-hidden">
                 <div className="absolute top-0 right-0 -mr-20 -mt-20 w-40 h-40 bg-white opacity-10 rounded-full"></div>
                 <ShoppingCart className="w-16 h-16 text-white relative z-10" strokeWidth={1.5} />
               </div>
               <div className="p-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">Customer Login</h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">
+                <h3 className={`text-2xl font-bold mb-3 ${isDark ? 'text-slate-100' : 'text-gray-900'}`}>Customer Login</h3>
+                <p className={`mb-6 leading-relaxed ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>
                   Browse and purchase fresh produce directly from farmers
                 </p>
                 <button className="w-full bg-linear-to-r from-teal-400 to-teal-600 hover:from-teal-500 hover:to-teal-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300">
@@ -382,7 +425,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
            <div className="text-center mb-16">
             <span className="text-emerald-600 font-semibold tracking-wider uppercase text-sm">Why Choose Us</span>
-            <h2 className="mt-2 text-3xl md:text-4xl font-bold text-slate-900">Revolutionizing the Supply Chain</h2>
+            <h2 className={`mt-2 text-3xl md:text-4xl font-bold ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>Revolutionizing the Supply Chain</h2>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -418,15 +461,21 @@ export default function HomePage() {
                 desc: "Promoting eco-friendly farming practices for a better tomorrow." 
               }
             ].map((feature, idx) => (
-              <div key={idx} className="flex gap-4 p-6 rounded-2xl hover:bg-white hover:shadow-lg transition-all duration-300 border border-transparent hover:border-slate-100">
+              <div key={idx} className={`flex gap-4 p-6 rounded-2xl hover:shadow-lg transition-all duration-300 border ${
+                isDark
+                  ? 'hover:bg-slate-800 border-transparent hover:border-slate-700'
+                  : 'hover:bg-white border-transparent hover:border-slate-100'
+              }`}>
                 <div className="shrink-0">
-                  <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                    isDark ? 'bg-emerald-900/30 text-emerald-400' : 'bg-emerald-100 text-emerald-600'
+                  }`}>
                     <feature.icon className="w-6 h-6" />
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-slate-800 mb-2">{feature.title}</h3>
-                  <p className="text-slate-500 leading-relaxed">{feature.desc}</p>
+                  <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-slate-100' : 'text-slate-800'}`}>{feature.title}</h3>
+                  <p className={`leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{feature.desc}</p>
                 </div>
               </div>
             ))}
@@ -435,7 +484,9 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer id="contact" className="bg-[#0f172a] text-slate-300 py-16 z-10 relative mt-12">
+      <footer id="contact" className={`py-16 z-10 relative mt-12 transition-colors duration-300 ${
+        isDark ? 'bg-slate-950 text-slate-300' : 'bg-[#0f172a] text-slate-300'
+      }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-12 mb-12">
             <div className="col-span-1 md:col-span-2">
@@ -443,13 +494,15 @@ export default function HomePage() {
                 <Leaf className="w-8 h-8 text-emerald-500" />
                 <span className="text-2xl font-bold text-white">KisanSetu</span>
               </div>
-              <p className="text-slate-400 max-w-sm leading-relaxed mb-6">
+              <p className={`max-w-sm leading-relaxed mb-6 ${isDark ? 'text-slate-400' : 'text-slate-400'}`}>
                 Bridging the gap between India's hardworking farmers and the modern marketplace. Technology for a greener, wealthier future.
               </p>
               <div className="flex gap-4">
                 {/* Social placeholders */}
                 {[1, 2, 3].map(i => (
-                  <div key={i} className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-emerald-600 transition-colors cursor-pointer">
+                  <div key={i} className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-emerald-600 transition-colors cursor-pointer ${
+                    isDark ? 'bg-slate-900' : 'bg-slate-800'
+                  }`}>
                     <div className="w-5 h-5 bg-current rounded-sm"></div>
                   </div>
                 ))}
@@ -477,9 +530,11 @@ export default function HomePage() {
             </div>
           </div>
           
-          <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-slate-500 text-sm">© 2026 KisanSetu. All rights reserved.</p>
-            <p className="text-slate-500 text-sm flex items-center gap-1">
+          <div className={`pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 ${
+            isDark ? 'border-slate-800' : 'border-slate-800'
+          }`}>
+            <p className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>© 2026 KisanSetu. All rights reserved.</p>
+            <p className={`text-sm flex items-center gap-1 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
               Made with <span className="text-red-500">♥</span> for Indian Agriculture
             </p>
           </div>

@@ -1,9 +1,11 @@
-import { Sprout, Home, TrendingUp, Users, LogOut, Bell, User, Tractor, Newspaper, Filter, RefreshCw, MapPin, Clock, ArrowLeft, Layers, Leaf, Store, Handshake, IndianRupee, Search, ShieldCheck, BarChart3, Building2, Globe, TrendingDown, Sun, CloudRain, Droplets } from 'lucide-react'
+import { Sprout, Home, TrendingUp, Users, LogOut, Bell, User, Tractor, Newspaper, Filter, RefreshCw, MapPin, Clock, ArrowLeft, Layers, Leaf, Store, Handshake, IndianRupee, Search, ShieldCheck, BarChart3, Building2, Globe, TrendingDown, Sun, Moon, CloudRain, Droplets } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { useTheme } from '../context/ThemeContext'
 import farmerBg from '../assets/farmerdashboard.png'
 
 export default function FarmerDashboard({ onNavigate }) {
+  const { isDark, toggleTheme } = useTheme()
   const [selectedCrop, setSelectedCrop] = useState('all')
   const [selectedLocation, setSelectedLocation] = useState('all')
   const [userLocation, setUserLocation] = useState('')
@@ -273,21 +275,39 @@ export default function FarmerDashboard({ onNavigate }) {
   ]
 
   return (
-    <div className="min-h-screen bg-[#F0FDF4] font-sans selection:bg-emerald-200 selection:text-emerald-900">
+    <div className={`min-h-screen font-sans selection:bg-emerald-200 selection:text-emerald-900 transition-colors duration-300 ${
+      isDark 
+        ? 'bg-slate-900 text-slate-100' 
+        : 'bg-[#F0FDF4]'
+    }`}>
       {/* Logo - Fixed in top-left corner */}
-      <div className="fixed top-6 left-6 z-50 flex items-center gap-3 bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl shadow-sm border border-emerald-100/50">
-        <div className="bg-emerald-100 p-2 rounded-xl">
+      <div className={`fixed top-6 left-6 z-50 flex items-center gap-3 backdrop-blur-md px-4 py-2 rounded-2xl shadow-sm border transition-colors duration-300 ${
+        isDark
+          ? 'bg-slate-800/90 border-slate-700'
+          : 'bg-white/90 border-emerald-100/50'
+      }`}>
+        <div className={`p-2 rounded-xl transition-colors duration-300 ${
+          isDark ? 'bg-emerald-900/50' : 'bg-emerald-100'
+        }`}>
           <Leaf className="w-6 h-6 text-emerald-600" />
         </div>
         <div>
-           <h1 className="text-xl font-bold text-emerald-950 leading-none">KisanSetu</h1>
-           <span className="text-[10px] uppercase tracking-wider text-emerald-600 font-bold">Farmer Connect</span>
+           <h1 className={`text-xl font-bold leading-none transition-colors duration-300 ${
+             isDark ? 'text-slate-100' : 'text-emerald-950'
+           }`}>KisanSetu</h1>
+           <span className={`text-[10px] uppercase tracking-wider font-bold transition-colors duration-300 ${
+             isDark ? 'text-emerald-400' : 'text-emerald-600'
+           }`}>Farmer Connect</span>
         </div>
       </div>
 
       {/* Navigation Bar - Centered at top, sticky */}
-      <nav className="fixed top-6 left-1/2 transform -translate-x-1/2 z-40 w-auto max-w-[90%]">
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl px-2 py-2 shadow-xl shadow-emerald-900/5 border border-white/50 ring-1 ring-black/5">
+      <nav className="fixed top-6 left-1/2 transform -translate-x-1/2 z-40 w-auto max-w-[90%] flex items-center gap-4">
+        <div className={`backdrop-blur-xl rounded-2xl px-2 py-2 shadow-xl shadow-emerald-900/5 border transition-colors duration-300 ${
+          isDark
+            ? 'bg-slate-800/80 border-slate-700/50 ring-1 ring-black/20'
+            : 'bg-white/80 border-white/50 ring-1 ring-black/5'
+        }`}>
           <div className="flex gap-1 items-center">
             {[
               { id: 'home', label: 'Home', icon: Home },
@@ -309,44 +329,71 @@ export default function FarmerDashboard({ onNavigate }) {
                 className={`flex items-center gap-2 font-semibold transition-all duration-300 px-5 py-2.5 rounded-xl text-sm ${
                   activeLink === item.id 
                     ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' 
-                    : 'text-slate-600 hover:text-emerald-700 hover:bg-emerald-50/80'
+                    : isDark
+                      ? 'text-slate-400 hover:text-emerald-400 hover:bg-slate-700/50'
+                      : 'text-slate-600 hover:text-emerald-700 hover:bg-emerald-50/80'
                 }`}
               >
-                <item.icon className={`w-4 h-4 ${activeLink === item.id ? 'text-emerald-100' : 'text-slate-400'}`} />
+                <item.icon className={`w-4 h-4 ${activeLink === item.id ? 'text-emerald-100' : isDark ? 'text-slate-500' : 'text-slate-400'}`} />
                 {item.label}
               </button>
             ))}
-            <div className="w-px h-8 bg-slate-200 mx-1"></div>
+            <div className={`w-px h-8 transition-colors duration-300 ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`}></div>
             <a 
                href="#"
                title="Logout"
-               className="flex items-center justify-center w-10 h-10 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all"
+               className={`flex items-center justify-center w-10 h-10 rounded-xl transition-all ${
+                 isDark
+                   ? 'text-slate-500 hover:text-red-400 hover:bg-red-950/30'
+                   : 'text-slate-400 hover:text-red-500 hover:bg-red-50'
+               }`}
             >
                <LogOut className="w-5 h-5" />
             </a>
           </div>
         </div>
+
+        {/* Theme Toggle Button */}
+        <button
+          onClick={toggleTheme}
+          className={`p-2 rounded-full transition-all duration-300 backdrop-blur-xl shadow-xl shadow-emerald-900/5 border ${
+            isDark
+              ? 'bg-slate-800/80 text-yellow-400 hover:bg-slate-700 border-slate-700/50'
+              : 'bg-white/80 text-slate-700 hover:bg-white border-white/50'
+          }`}
+          title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+        >
+          {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </button>
       </nav>
 
       {/* Top Spacing for fixed navbar */}
       <div className="h-28"></div>
 
       {/* Hero Section */}
-      <section id="home" className="relative mx-4 sm:mx-6 lg:mx-8 rounded-[2.5rem] overflow-hidden shadow-2xl shadow-emerald-900/20 mb-10 group">
-        <div className="absolute inset-0 bg-stone-900">
+      <section id="home" className={`relative mx-4 sm:mx-6 lg:mx-8 rounded-[2.5rem] overflow-hidden shadow-2xl mb-10 group transition-colors duration-300 ${
+        isDark ? 'shadow-slate-900/20' : 'shadow-emerald-900/20'
+      }`}>
+        <div className={`absolute inset-0 ${isDark ? 'bg-slate-950' : 'bg-stone-900'}`}>
            <img src={farmerBg} className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-[2s] ease-out" alt="Farmer Background" />
         </div>
-        <div className="absolute inset-0 bg-linear-to-r from-emerald-950/90 via-emerald-900/40 to-transparent"></div>
+        <div className={`absolute inset-0 ${isDark ? 'bg-linear-to-r from-slate-950/95 via-slate-900/60 to-transparent' : 'bg-linear-to-r from-emerald-950/90 via-emerald-900/40 to-transparent'}`}></div>
         <div className="relative py-16 px-8 md:px-16 max-w-4xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-100 text-xs font-bold uppercase tracking-widest mb-6 backdrop-blur-md">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-6 backdrop-blur-md border transition-colors duration-300 ${
+            isDark
+              ? 'bg-emerald-900/30 border-emerald-700/50 text-emerald-200'
+              : 'bg-emerald-500/20 border-emerald-400/30 text-emerald-100'
+          }`}>
+            <span className={`w-2 h-2 rounded-full animate-pulse ${isDark ? 'bg-emerald-400' : 'bg-emerald-400'}`}></span>
             Live Market Data
           </div>
           <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight tracking-tight">
             Smart Farming Starts with <br/>
             <span className="text-transparent bg-clip-text bg-linear-to-r from-emerald-200 to-teal-400">Real-Time Decisions</span>
           </h2>
-          <p className="text-lg text-emerald-100/80 mb-10 max-w-xl leading-relaxed">
+          <p className={`text-lg mb-10 max-w-xl leading-relaxed ${
+            isDark ? 'text-slate-300' : 'text-emerald-100/80'
+          }`}>
             Instantly access Mandi prices, connect with verified buyers, and maximize your harvest's value with AI-driven insights.
           </p>
           <div className="flex flex-wrap gap-4">
@@ -385,14 +432,20 @@ export default function FarmerDashboard({ onNavigate }) {
             </div>
 
             {/* Trending Up */}
-            <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className={`rounded-3xl p-6 border shadow-sm hover:shadow-md transition-all ${
+              isDark
+                ? 'bg-slate-800 border-slate-700'
+                : 'bg-white border-slate-100'
+            }`}>
                 <div className="flex items-center gap-3 mb-4">
-                   <div className="p-2.5 bg-emerald-100 text-emerald-600 rounded-xl">
+                   <div className={`p-2.5 rounded-xl ${
+                     isDark ? 'bg-emerald-900/50 text-emerald-400' : 'bg-emerald-100 text-emerald-600'
+                   }`}>
                       <TrendingUp className="w-5 h-5" />
                    </div>
                    <div>
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Top Gainer</p>
-                      <p className="font-bold text-slate-700">Arecanut</p>
+                      <p className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Top Gainer</p>
+                      <p className={`font-bold ${isDark ? 'text-slate-100' : 'text-slate-700'}`}>Arecanut</p>
                    </div>
                 </div>
                 <div className="flex items-baseline gap-2">
@@ -402,14 +455,20 @@ export default function FarmerDashboard({ onNavigate }) {
             </div>
 
             {/* Trending Down */}
-            <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className={`rounded-3xl p-6 border shadow-sm hover:shadow-md transition-all ${
+              isDark
+                ? 'bg-slate-800 border-slate-700'
+                : 'bg-white border-slate-100'
+            }`}>
                 <div className="flex items-center gap-3 mb-4">
-                   <div className="p-2.5 bg-red-100 text-red-600 rounded-xl">
+                   <div className={`p-2.5 rounded-xl ${
+                     isDark ? 'bg-red-900/50 text-red-400' : 'bg-red-100 text-red-600'
+                   }`}>
                       <TrendingDown className="w-5 h-5" />
                    </div>
                    <div>
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Top Loser</p>
-                      <p className="font-bold text-slate-700">Tomato</p>
+                      <p className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Top Loser</p>
+                      <p className={`font-bold ${isDark ? 'text-slate-100' : 'text-slate-700'}`}>Tomato</p>
                    </div>
                 </div>
                 <div className="flex items-baseline gap-2">
@@ -419,12 +478,14 @@ export default function FarmerDashboard({ onNavigate }) {
             </div>
 
              {/* Mandi Activity */}
-            <div className="bg-emerald-900 rounded-3xl p-6 text-white relative overflow-hidden">
+            <div className={`rounded-3xl p-6 relative overflow-hidden ${
+              isDark ? 'bg-emerald-900/40 text-emerald-100' : 'bg-emerald-900 text-white'
+            }`}>
                 <div className="flex gap-4 items-center relative z-10">
                    <div>
-                      <p className="text-emerald-300 text-xs font-bold uppercase tracking-wider mb-1">Live Mandis</p>
-                      <h3 className="text-4xl font-bold text-white mb-2">142</h3>
-                      <p className="text-emerald-400/80 text-xs">Active markets reporting data today</p>
+                      <p className={`text-xs font-bold uppercase tracking-wider mb-1 ${isDark ? 'text-emerald-300' : 'text-emerald-300'}`}>Live Mandis</p>
+                      <h3 className={`text-4xl font-bold mb-2 ${isDark ? 'text-emerald-100' : 'text-white'}`}>142</h3>
+                      <p className={`text-xs ${isDark ? 'text-emerald-300/70' : 'text-emerald-400/80'}`}>Active markets reporting data today</p>
                    </div>
                 </div>
                 <div className="absolute top-0 right-0 p-4 opacity-10">
@@ -443,26 +504,38 @@ export default function FarmerDashboard({ onNavigate }) {
             {/* Header & Controls */}
             <div className="mb-8">
               <div className="flex items-center justify-between mb-6">
-                 <h2 className="text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+                 <h2 className={`text-2xl font-bold tracking-tight flex items-center gap-2 ${isDark ? 'text-slate-100' : 'text-slate-800'}`}>
                     <div className="w-1 h-8 bg-emerald-500 rounded-full"></div>
                     Current Market Prices
                  </h2>
-                 <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest bg-slate-100 px-3 py-1 rounded-full flex items-center gap-1">
+                 <span className={`text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1 ${
+                   isDark 
+                     ? 'bg-slate-800 text-slate-400' 
+                     : 'bg-slate-100 text-slate-400'
+                 }`}>
                    <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
                    Live Updates
                  </span>
               </div>
               
-              <div className="bg-white p-5 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100">
+              <div className={`p-5 rounded-3xl shadow-xl border transition-all ${
+                isDark
+                  ? 'bg-slate-800 border-slate-700 shadow-slate-900/20'
+                  : 'bg-white border-slate-100 shadow-slate-200/50'
+              }`}>
                 {userLocation && regionalCrops[userLocation] && (
-                    <div className="mb-6 pb-6 border-b border-slate-100">
+                    <div className={`mb-6 pb-6 border-b ${isDark ? 'border-slate-700' : 'border-slate-100'}`}>
                     <div className="flex items-center gap-2 mb-3">
                         <MapPin className="w-4 h-4 text-emerald-600" />
-                        <h3 className="text-sm font-bold text-slate-700"> Local Priority: {userLocation}</h3>
+                        <h3 className={`text-sm font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}> Local Priority: {userLocation}</h3>
                     </div>
                     <div className="flex flex-wrap gap-2">
                         {regionalCrops[userLocation].map(c => (
-                        <span key={c} className="text-xs font-bold px-3 py-1.5 bg-emerald-50 border border-emerald-100/50 text-emerald-700 rounded-lg shadow-sm">
+                        <span key={c} className={`text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm border ${
+                          isDark
+                            ? 'bg-emerald-900/30 border-emerald-700/50 text-emerald-300'
+                            : 'bg-emerald-50 border-emerald-100/50 text-emerald-700'
+                        }`}>
                             {c}
                         </span>
                         ))}
@@ -473,29 +546,41 @@ export default function FarmerDashboard({ onNavigate }) {
                 <div className="flex flex-col md:flex-row gap-4 items-center">
                     {/* Region Filter */}
                     <div className="relative w-full md:w-auto md:flex-1 group">
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block ml-1">Region</label>
+                        <label className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ml-1 ${isDark ? 'text-slate-400' : 'text-slate-400'}`}>Region</label>
                         <select 
                         value={userLocation} 
                         onChange={(e) => setUserLocation(e.target.value)} 
-                        className={`appearance-none w-full border text-slate-700 py-3.5 px-4 pr-10 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-semibold transition-all cursor-pointer ${userLocation ? 'bg-emerald-50/50 border-emerald-200' : 'bg-slate-50 border-slate-200 hover:border-slate-300'}`}
+                        className={`appearance-none w-full py-3.5 px-4 pr-10 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-semibold transition-all cursor-pointer border ${
+                          isDark
+                            ? userLocation 
+                              ? 'bg-emerald-900/30 border-emerald-700/50 text-slate-100'
+                              : 'bg-slate-700 border-slate-600 text-slate-300 hover:border-slate-500'
+                            : userLocation
+                              ? 'bg-emerald-50/50 border-emerald-200 text-slate-700'
+                              : 'bg-slate-50 border-slate-200 text-slate-700 hover:border-slate-300'
+                        }`}
                         >
                             <option value="">Global View</option>
                             {Object.keys(regionalCrops).sort().map(loc => (
                             <option key={loc} value={loc}>{loc}</option>
                             ))}
                         </select>
-                        <div className="pointer-events-none absolute bottom-3.5 right-0 flex items-center px-4 text-slate-400 group-hover:text-emerald-500 transition-colors">
+                        <div className={`pointer-events-none absolute bottom-3.5 right-0 flex items-center px-4 transition-colors ${isDark ? 'text-slate-500 group-hover:text-emerald-400' : 'text-slate-400 group-hover:text-emerald-500'}`}>
                         <Globe className="w-4 h-4" />
                         </div>
                     </div>
 
                     {/* Crop Filter */}
                     <div className="relative w-full md:w-auto md:flex-1 group">
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block ml-1">Commodity</label>
+                        <label className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ml-1 ${isDark ? 'text-slate-400' : 'text-slate-400'}`}>Commodity</label>
                         <select 
                         value={selectedCrop} 
                         onChange={(e) => setSelectedCrop(e.target.value)} 
-                        className="appearance-none w-full bg-slate-50 border border-slate-200 text-slate-700 py-3.5 px-4 pr-10 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-semibold transition-all cursor-pointer hover:border-slate-300"
+                        className={`appearance-none w-full py-3.5 px-4 pr-10 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-semibold transition-all cursor-pointer border ${
+                          isDark
+                            ? 'bg-slate-700 border-slate-600 text-slate-100 hover:border-slate-500'
+                            : 'bg-slate-50 border-slate-200 text-slate-700 hover:border-slate-300'
+                        }`}
                         >
                             {getUniqueValues('commodity').map(crop => (
                             <option key={crop} value={crop}>{crop === 'all' ? 'All Crops' : crop}</option>
