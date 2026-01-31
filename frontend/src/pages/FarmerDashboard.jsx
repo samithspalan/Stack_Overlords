@@ -366,10 +366,10 @@ export default function FarmerDashboard({ onNavigate }) {
         }`}>
           <div className="flex gap-1 items-center">
             {[
-              { id: 'home', labelKey: 'nav.home', icon: Home },
-              { id: 'market-prices', labelKey: 'nav.analytics', icon: BarChart3 },
-              { id: 'chats', labelKey: 'nav.notifications', icon: Bell },
-              { id: 'listings', labelKey: 'nav.listings', icon: Store }
+              { id: 'home', label: 'Home', icon: Home },
+              { id: 'market-prices', label: 'Market Prices', icon: BarChart3 },
+              { id: 'chats', label: 'Chats', icon: Bell },
+              { id: 'listings', label: 'My Listings', icon: Store }
             ].map(item => (
               <button 
                 key={item.id}
@@ -395,10 +395,21 @@ export default function FarmerDashboard({ onNavigate }) {
                 }`}
               >
                 <item.icon className={`w-4 h-4 ${activeLink === item.id ? 'text-emerald-100' : isDark ? 'text-slate-500' : 'text-slate-400'}`} />
-                {t(item.labelKey)}
+                {item.label}
               </button>
             ))}
             <div className={`w-px h-8 transition-colors duration-300 ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`}></div>
+            <button
+              onClick={toggleTheme}
+              className={`flex items-center justify-center w-10 h-10 rounded-xl transition-all ${
+                isDark
+                  ? 'text-yellow-400 hover:bg-slate-700/50'
+                  : 'text-slate-600 hover:bg-slate-100'
+              }`}
+              title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
+              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
             <a 
                href="#"
                title="Logout"
@@ -412,19 +423,6 @@ export default function FarmerDashboard({ onNavigate }) {
             </a>
           </div>
         </div>
-
-        {/* Theme Toggle Button */}
-        <button
-          onClick={toggleTheme}
-          className={`p-2 rounded-full transition-all duration-300 backdrop-blur-xl shadow-xl shadow-emerald-900/5 border pointer-events-auto cursor-pointer ${
-            isDark
-              ? 'bg-slate-800/80 text-yellow-400 hover:bg-slate-700 border-slate-700/50'
-              : 'bg-white/80 text-slate-700 hover:bg-white border-white/50'
-          }`}
-          title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-        >
-          {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-        </button>
       </nav>
 
       {/* Top Spacing for fixed navbar */}
