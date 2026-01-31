@@ -2,10 +2,13 @@ import { Sprout, Home, TrendingUp, Users, LogOut, Bell, User, Tractor, Newspaper
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useTheme } from '../context/ThemeContext'
+import { useTranslation } from 'react-i18next'
+import LanguageToggle from '../components/LanguageToggle'
 import farmerBg from '../assets/farmerdashboard.png'
 
 export default function FarmerDashboard({ onNavigate }) {
   const { isDark, toggleTheme } = useTheme()
+  const { t } = useTranslation()
   const [selectedCrop, setSelectedCrop] = useState('all')
   const [selectedLocation, setSelectedLocation] = useState('all')
   const [userLocation, setUserLocation] = useState('')
@@ -349,6 +352,11 @@ export default function FarmerDashboard({ onNavigate }) {
         </div>
       </div>
 
+      {/* Language Toggle - Top Right */}
+      <div className="fixed top-6 right-6 z-40">
+        <LanguageToggle />
+      </div>
+
       {/* Navigation Bar - Centered at top, sticky */}
       <nav className="fixed top-6 left-1/2 transform -translate-x-1/2 z-40 w-auto max-w-[90%] flex items-center gap-4">
         <div className={`backdrop-blur-xl rounded-2xl px-2 py-2 shadow-xl shadow-emerald-900/5 border transition-colors duration-300 ${
@@ -358,10 +366,10 @@ export default function FarmerDashboard({ onNavigate }) {
         }`}>
           <div className="flex gap-1 items-center">
             {[
-              { id: 'home', label: 'Home', icon: Home },
-              { id: 'market-prices', label: 'Market Prices', icon: BarChart3 },
-              { id: 'chats', label: 'Chats', icon: Bell },
-              { id: 'listings', label: 'My Listings', icon: Store }
+              { id: 'home', labelKey: 'nav.home', icon: Home },
+              { id: 'market-prices', labelKey: 'nav.analytics', icon: BarChart3 },
+              { id: 'chats', labelKey: 'nav.notifications', icon: Bell },
+              { id: 'listings', labelKey: 'nav.listings', icon: Store }
             ].map(item => (
               <button 
                 key={item.id}
@@ -387,7 +395,7 @@ export default function FarmerDashboard({ onNavigate }) {
                 }`}
               >
                 <item.icon className={`w-4 h-4 ${activeLink === item.id ? 'text-emerald-100' : isDark ? 'text-slate-500' : 'text-slate-400'}`} />
-                {item.label}
+                {t(item.labelKey)}
               </button>
             ))}
             <div className={`w-px h-8 transition-colors duration-300 ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`}></div>
@@ -437,29 +445,29 @@ export default function FarmerDashboard({ onNavigate }) {
               : 'bg-emerald-500/20 border-emerald-400/30 text-emerald-100'
           }`}>
             <span className={`w-2 h-2 rounded-full animate-pulse ${isDark ? 'bg-emerald-400' : 'bg-emerald-400'}`}></span>
-            Live Market Data
+            {t('farmer.liveMarketData')}
           </div>
           <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight tracking-tight">
-            Smart Farming Starts with <br/>
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-emerald-200 to-teal-400">Real-Time Decisions</span>
+            {t('farmer.smartFarmingPart1')} <br/>
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-emerald-200 to-teal-400">{t('farmer.smartFarmingPart2')}</span>
           </h2>
           <p className={`text-lg mb-10 max-w-xl leading-relaxed ${
             isDark ? 'text-slate-300' : 'text-emerald-100/80'
           }`}>
-            Instantly access Mandi prices, connect with verified buyers, and maximize your harvest's value with AI-driven insights.
+            {t('farmer.smartFarmingDesc')}
           </p>
           <div className="flex flex-wrap gap-4">
             <button 
               onClick={() => onNavigate('market-analysis')}
               className="bg-emerald-500 hover:bg-emerald-400 text-white px-8 py-4 rounded-xl font-bold transition-all shadow-lg shadow-emerald-900/20 hover:shadow-emerald-500/30 flex items-center gap-2"
             >
-              <IndianRupee className="w-5 h-5" /> Check Prices
+              <IndianRupee className="w-5 h-5" /> {t('farmer.checkPrices')}
             </button>
             <button 
                onClick={() => onNavigate('market-analysis')}
                className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-xl font-bold transition-all flex items-center gap-2"
             >
-              <Handshake className="w-5 h-5" /> Find Buyers
+              <Handshake className="w-5 h-5" /> {t('farmer.findBuyers')}
             </button>
           </div>
         </div>

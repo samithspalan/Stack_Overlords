@@ -7,6 +7,14 @@
     "marketplace": "Marketplace",
     "logout": "Logout"
   },
+  "farmer": {
+    "liveMarketData": "Live Market Data",
+    "smartFarmingPart1": "Smart Farming Starts with",
+    "smartFarmingPart2": "Real-Time Decisions",
+    "smartFarmingDesc": "Instantly access Mandi prices, connect with verified buyers, and maximize your harvest's value with AI-driven insights.",
+    "checkPrices": "Check Prices",
+    "findBuyers": "Find Buyers"
+  },
   "common": {
     "search": "Search",
     "location": "Location",
@@ -80,6 +88,92 @@
     "username": "Username",
     "role": "Role",
     "farmer": "Farmer",
-    "customer": "Customer"
+    "customer": "Customer",
+    "farmersLogin": "Farmer Login",
+    "customerLogin": "Customer Login",
+    "farmersSignup": "Farmer Sign Up",
+    "customerSignup": "Customer Sign Up",
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "forgotPassword": "Forgot password?",
+    "loginButton": "Login",
+    "signupButton": "Sign Up",
+    "continueWith": "Continue with",
+    "enterEmail": "Enter your email",
+    "enterPassword": "Enter your password",
+    "enterUsername": "Enter your username",
+    "enterPhoneNumber": "Enter your phone number",
+    "errorInvalidCredentials": "Invalid email or password",
+    "errorEmailExists": "Email already exists",
+    "errorNetworkError": "Network error. Please try again.",
+    "joinAsRole": "Join as {role}"
+  },
+  "home": {
+    "title": "Welcome to KisanSetu",
+    "subtitle": "Connecting Farmers with Customers",
+    "description": "Direct farm-to-table marketplace for fresh produce",
+    "getStarted": "Get Started",
+    "viewListings": "View Listings",
+    "becomePartner": "Become a Partner",
+    "farmerButton": "I'm a Farmer",
+    "customerButton": "I'm a Customer",
+    "heroPrimaryTitle": "Cultivating a",
+    "heroSecondaryTitle": "Better Future",
+    "heroDescription": "Directly connecting farmers with modern markets. Fair prices, transparent supply chains, and real-time insights for a thriving agricultural ecosystem.",
+    "learnMore": "Learn More",
+    "activeFarmers": "Active Farmers",
+    "weeklyVolume": "Weekly Volume",
+    "partnerMandis": "Partner Mandis",
+    "tons": "Tons",
+    "aboutTitle": "About KisanSetu",
+    "aboutDescription": "KisanSetu connects farmers and buyers with transparent pricing, real-time market insights, and smarter supply chain decisions—helping growers earn more while delivering fresher produce.",
+    "selectRoleTitle": "Select Your Role",
+    "selectRoleSubtitle": "Choose your account type to get started",
+    "farmerCardDesc": "Access your farm profile and connect directly with markets",
+    "customerCardDesc": "Browse and purchase fresh produce directly from farmers",
+    "whyChooseUs": "Why Choose Us",
+    "revolutionizingSupplyChain": "Revolutionizing the Supply Chain",
+    "features": {
+      "fairTrade": {
+        "title": "Fair Trade Practices",
+        "desc": "We ensure every farmer gets their due worth through our transparent bidding system."
+      },
+      "smartLogistics": {
+        "title": "Smart Logistics",
+        "desc": "Integrated logistics support to get produce from farm to fork faster and fresher."
+      },
+      "weatherInsights": {
+        "title": "Weather Insights",
+        "desc": "Real-time weather data to help farmers plan their harvest and protect crops."
+      },
+      "securePayments": {
+        "title": "Secure Payments",
+        "desc": "Escrow-protected payments ensure safety for both buyers and sellers."
+      },
+      "marketAnalysis": {
+        "title": "Market Analysis",
+        "desc": "Data-driven insights on crop demand and pricing trends."
+      },
+      "sustainableGrowth": {
+        "title": "Sustainable Growth",
+        "desc": "Promoting eco-friendly farming practices for a better tomorrow."
+      }
+    },
+    "footer": {
+      "bridging": "Bridging the gap between India's hardworking farmers and the modern marketplace. Technology for a greener, wealthier future.",
+      "platform": "Platform",
+      "findProduce": "Find Produce",
+      "sellCrops": "Sell Crops",
+      "marketPrices": "Market Prices",
+      "logistics": "Logistics",
+      "support": "Support",
+      "helpCenter": "Help Center",
+      "safetyGuidelines": "Safety Guidelines",
+      "termsOfService": "Terms of Service",
+      "privacyPolicy": "Privacy Policy",
+      "copyright": "© 2026 KisanSetu. All rights reserved.",
+      "madeWith": "Made with",
+      "forIndianAgriculture": "for Indian Agriculture"
+    }
   }
 }

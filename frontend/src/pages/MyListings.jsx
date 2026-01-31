@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
 import { ArrowLeft, Plus, Package, IndianRupee, MapPin, Trash2, Edit, Calendar, Leaf, Home, BarChart3, Bell, Store, LogOut, Sun, Moon } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
+import { useTranslation } from 'react-i18next'
 import axios from 'axios'
+import LanguageToggle from '../components/LanguageToggle'
 
 export default function MyListings({ onBack, onNavigate }) {
   const { isDark, toggleTheme } = useTheme()
+  const { t } = useTranslation()
   const [activeLink, setActiveLink] = useState('listings')
   const [listings, setListings] = useState([])
   const [loading, setLoading] = useState(true)
@@ -153,6 +156,11 @@ export default function MyListings({ onBack, onNavigate }) {
       </div>
 
       {/* Navigation Bar - Centered at top, sticky */}
+      {/* Language Toggle - Top Right */}
+      <div className="fixed top-6 right-6 z-40">
+        <LanguageToggle />
+      </div>
+
       <nav className="fixed top-6 left-1/2 transform -translate-x-1/2 z-40 w-auto max-w-[90%] flex items-center gap-4">
         <div className={`backdrop-blur-xl rounded-2xl px-2 py-2 shadow-xl shadow-emerald-900/5 border transition-colors duration-300 ${
           isDark
@@ -161,10 +169,10 @@ export default function MyListings({ onBack, onNavigate }) {
         }`}>
           <div className="flex gap-1 items-center">
             {[
-              { id: 'home', label: 'Home', icon: Home },
-              { id: 'market-prices', label: 'Market Prices', icon: BarChart3 },
-              { id: 'chats', label: 'Chats', icon: Bell },
-              { id: 'listings', label: 'My Listings', icon: Store }
+              { id: 'home', label: t('nav.home'), icon: Home },
+              { id: 'market-prices', label: t('nav.analytics'), icon: BarChart3 },
+              { id: 'chats', label: t('nav.notifications'), icon: Bell },
+              { id: 'listings', label: t('nav.listings'), icon: Store }
             ].map(item => (
               <button 
                 key={item.id}
@@ -230,7 +238,7 @@ export default function MyListings({ onBack, onNavigate }) {
             </div>
             <div>
               <h1 className={`text-2xl font-bold ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
-                My Listings
+                {t('listings.title')}
               </h1>
               <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                 Manage your crop listings
@@ -242,7 +250,7 @@ export default function MyListings({ onBack, onNavigate }) {
             className="flex items-center gap-2 px-5 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors shadow-lg"
           >
             <Plus className="w-5 h-5" />
-            <span>New Listing</span>
+            <span>{t('listings.createNew')}</span>
           </button>
         </div>
 

@@ -1,11 +1,14 @@
 import { Sprout, Mail, Lock, ShoppingCart, Sun, Moon } from 'lucide-react'
 import { useState } from 'react'
 import { useTheme } from '../context/ThemeContext'
+import { useTranslation } from 'react-i18next'
 import { authService } from '../services/authService'
+import LanguageToggle from '../components/LanguageToggle'
 import BorderAnimatedContainer from '../../components/BorderAnimatedContainer'
 
 export default function CustomerLogin({ onNavigate, onLoginSuccess }) {
   const { isDark, toggleTheme } = useTheme()
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -54,6 +57,7 @@ export default function CustomerLogin({ onNavigate, onLoginSuccess }) {
       </div>
 
       <div className="fixed top-6 right-6 z-50 flex items-center gap-3">
+        <LanguageToggle />
         <button
           onClick={toggleTheme}
           className={`p-2 rounded-full transition-all duration-300 ${

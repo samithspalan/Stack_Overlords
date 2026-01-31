@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import { Sprout, LogOut, Search, MapPin, Phone, Mail, Home, Heart, ShoppingCart, Settings, Sun, Moon, Menu, X } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
+import { useTranslation } from 'react-i18next'
 import axios from 'axios'
 import FarmerLocationMap from '../components/FarmerLocationMap'
+import LanguageToggle from '../components/LanguageToggle'
 
 export default function CustomerDashboard({ onNavigate, onLogout }) {
   const { isDark, toggleTheme } = useTheme()
+  const { t } = useTranslation()
   const [user, setUser] = useState(null)
   const [activeTab, setActiveTab] = useState('home')
   const [showMenu, setShowMenu] = useState(false)
@@ -142,6 +145,11 @@ export default function CustomerDashboard({ onNavigate, onLogout }) {
         </div>
       </div>
 
+      {/* Language Toggle - Top Right */}
+      <div className="fixed top-6 right-6 z-40">
+        <LanguageToggle />
+      </div>
+
       {/* Navigation Bar - Centered at top, floating */}
       <nav className="fixed top-6 left-1/2 transform -translate-x-1/2 z-40 w-auto max-w-[90%] flex items-center gap-4">
         <div className={`backdrop-blur-2xl rounded-full px-2 py-1.5 shadow-2xl transition-colors duration-300 ${
@@ -151,10 +159,10 @@ export default function CustomerDashboard({ onNavigate, onLogout }) {
         }`}>
           <div className="flex gap-1 items-center">
             {[
-              { id: 'home', label: 'Home', icon: Home },
+              { id: 'home', label: t('nav.home'), icon: Home },
               { id: 'chats', label: 'Chats', icon: Mail },
               { id: 'theme', label: '', icon: isDark ? Sun : Moon, isButton: true },
-              { id: 'logout', label: 'Logout', icon: LogOut, isButton: true }
+              { id: 'logout', label: t('nav.logout'), icon: LogOut, isButton: true }
             ].map(item => (
               <button
                 key={item.id}
@@ -206,7 +214,7 @@ export default function CustomerDashboard({ onNavigate, onLogout }) {
               <Search className={`absolute left-4 top-3.5 w-5 h-5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`} />
               <input
                 type="text"
-                placeholder="Search farmers or crops..."
+                placeholder={t('dashboard.searchPlaceholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className={`w-full pl-12 pr-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 transition-all ${
@@ -225,11 +233,11 @@ export default function CustomerDashboard({ onNavigate, onLogout }) {
                   : 'bg-slate-50 text-slate-900 focus:border-2 focus:border-teal-600'
               }`}
             >
-              <option value="all">All Categories</option>
-              <option value="vegetables">Vegetables</option>
-              <option value="grains">Grains</option>
-              <option value="fruits">Fruits</option>
-              <option value="organic">Organic</option>
+              <option value="all">{t('dashboard.categories.all')}</option>
+              <option value="vegetables">{t('dashboard.categories.vegetables')}</option>
+              <option value="grains">{t('dashboard.categories.grains')}</option>
+              <option value="fruits">{t('dashboard.categories.fruits')}</option>
+              <option value="pulses">{t('dashboard.categories.pulses')}</option>
             </select>
           </div>
         </div>
@@ -284,7 +292,7 @@ export default function CustomerDashboard({ onNavigate, onLogout }) {
                         <MapPin className="w-4 h-4 text-teal-600" />
                       </div>
                       <div>
-                        <p className="text-xs font-semibold opacity-70">Location</p>
+                        <p className="text-xs font-semibold opacity-70">{t('common.location')}</p>
                         <p className="font-medium">{farmer.location}</p>
                       </div>
                     </div>
@@ -293,7 +301,7 @@ export default function CustomerDashboard({ onNavigate, onLogout }) {
                         <ShoppingCart className="w-4 h-4 text-teal-600" />
                       </div>
                       <div>
-                        <p className="text-xs font-semibold opacity-70">Specialties</p>
+                        <p className="text-xs font-semibold opacity-70">{t('dashboard.farmerCard.crops')}</p>
                         <p className="font-medium text-sm">{farmer.crops.join(', ')}</p>
                       </div>
                     </div>
@@ -310,7 +318,7 @@ export default function CustomerDashboard({ onNavigate, onLogout }) {
                         <div className="flex items-center gap-2 mb-1">
                           <div className={`w-2 h-2 rounded-full ${isDark ? 'bg-teal-400' : 'bg-teal-600'}`}></div>
                           <p className={`text-xs font-semibold uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                            Sell Price
+                            {t('dashboard.farmerCard.sellPrice')}
                           </p>
                         </div>
                         <p className={`text-2xl font-bold ${isDark ? 'text-teal-400' : 'text-teal-600'}`}>
@@ -326,7 +334,7 @@ export default function CustomerDashboard({ onNavigate, onLogout }) {
                         <div className="flex items-center gap-2 mb-1">
                           <div className={`w-2 h-2 rounded-full ${isDark ? 'bg-orange-400' : 'bg-orange-600'}`}></div>
                           <p className={`text-xs font-semibold uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                            Market Avg
+                            {t('dashboard.farmerCard.marketAvg')}
                           </p>
                         </div>
                         <p className={`text-2xl font-bold ${isDark ? 'text-orange-400' : 'text-orange-600'}`}>
@@ -344,7 +352,7 @@ export default function CustomerDashboard({ onNavigate, onLogout }) {
                         <div className={`px-3 py-1.5 rounded-full font-semibold ${
                           isDark ? 'bg-green-900/30 text-green-400' : 'bg-green-100 text-green-700'
                         }`}>
-                          💰 {Math.round(((farmer.avgMarketPrice - farmer.expectedPrice) / farmer.avgMarketPrice) * 100)}% Below Market Average
+                          💰 {Math.round(((farmer.avgMarketPrice - farmer.expectedPrice) / farmer.avgMarketPrice) * 100)}% {t('dashboard.farmerCard.belowMarket')}
                         </div>
                       </div>
                     )}
@@ -353,7 +361,7 @@ export default function CustomerDashboard({ onNavigate, onLogout }) {
                         <div className={`px-3 py-1.5 rounded-full font-semibold ${
                           isDark ? 'bg-amber-900/30 text-amber-400' : 'bg-amber-100 text-amber-700'
                         }`}>
-                          📈 {Math.round(((farmer.expectedPrice - farmer.avgMarketPrice) / farmer.avgMarketPrice) * 100)}% Above Market Average
+                          📈 {Math.round(((farmer.expectedPrice - farmer.avgMarketPrice) / farmer.avgMarketPrice) * 100)}% {t('dashboard.farmerCard.aboveMarket')}
                         </div>
                       </div>
                     )}
@@ -366,7 +374,7 @@ export default function CustomerDashboard({ onNavigate, onLogout }) {
                       className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
                     >
                       <Mail className="w-4 h-4" />
-                      Message
+                      {t('dashboard.farmerCard.message')}
                     </button>
                     <button 
                       onClick={() => handleViewLocation(farmer)}
@@ -377,7 +385,7 @@ export default function CustomerDashboard({ onNavigate, onLogout }) {
                       }`}
                     >
                       <MapPin className="w-4 h-4" />
-                      Location
+                      {t('common.location')}
                     </button>
                   </div>
                 </div>

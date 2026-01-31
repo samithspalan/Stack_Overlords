@@ -14,9 +14,12 @@ import {
 } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { useTheme } from '../context/ThemeContext'
+import { useTranslation } from 'react-i18next'
+import LanguageToggle from '../components/LanguageToggle'
 
 export default function HomePage() {
   const { isDark, toggleTheme } = useTheme()
+  const { t } = useTranslation()
   const [activeLink, setActiveLink] = useState('home')
   const canvasRef = useRef(null)
   const mousePos = useRef({ x: 0, y: 0 })
@@ -219,7 +222,7 @@ export default function HomePage() {
                 activeLink === 'home' ? 'bg-green-600 text-white' : isDark ? 'text-slate-300 hover:text-green-400' : 'text-gray-700 hover:text-green-600'
               }`}
             >
-              Home
+              {t('nav.home')}
             </a>
             <a 
               href="#about" 
@@ -261,18 +264,21 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Theme Toggle Button */}
-        <button
-          onClick={toggleTheme}
-          className={`p-2 rounded-full transition-all duration-300 ${
-            isDark
-              ? 'bg-slate-800 text-yellow-400 hover:bg-slate-700'
-              : 'bg-white text-slate-700 hover:bg-slate-100'
-          } shadow-lg border ${isDark ? 'border-slate-700' : 'border-white/20'}`}
-          title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-        >
-          {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-        </button>
+        {/* Language & Theme Toggle Buttons */}
+        <div className="flex items-center gap-3">
+          <LanguageToggle />
+          <button
+            onClick={toggleTheme}
+            className={`p-2 rounded-full transition-all duration-300 ${
+              isDark
+                ? 'bg-slate-800 text-yellow-400 hover:bg-slate-700'
+                : 'bg-white text-slate-700 hover:bg-slate-100'
+            } shadow-lg border ${isDark ? 'border-slate-700' : 'border-white/20'}`}
+            title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          >
+            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
+        </div>
       </nav>
 
       {/* Hero Section */}
@@ -283,16 +289,16 @@ export default function HomePage() {
           <h1 className={`text-4xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight leading-tight ${
             isDark ? 'text-slate-100' : 'text-slate-900'
           }`}>
-            Cultivating a <br />
+            {t('home.heroPrimaryTitle')} <br />
             <span className="text-transparent bg-clip-text bg-linear-to-r from-emerald-600 via-teal-500 to-emerald-600">
-              Better Future
+              {t('home.heroSecondaryTitle')}
             </span>
           </h1>
 
           <p className={`text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed ${
             isDark ? 'text-slate-400' : 'text-slate-600'
           }`}>
-            Directly connecting farmers with modern markets. Fair prices, transparent supply chains, and real-time insights for a thriving agricultural ecosystem.
+            {t('home.heroDescription')}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-20">
@@ -304,7 +310,7 @@ export default function HomePage() {
                }}
                className="group bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-xl shadow-emerald-200 hover:shadow-emerald-300 flex items-center gap-2"
              >
-               Connect Now
+               {t('home.getStarted')}
                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
              </button>
              <button
@@ -315,16 +321,16 @@ export default function HomePage() {
                }}
                className="group bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:border-emerald-200 flex items-center gap-2"
              >
-               Learn More
+               {t('home.learnMore')}
              </button>
           </div>
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {[
-              { label: 'Active Farmers', value: farmers, suffix: '+', icon: Users, color: 'text-blue-600', bg: isDark ? 'bg-blue-900/30' : 'bg-blue-50' },
-              { label: 'Weekly Volume', value: volume, suffix: ' Tons', icon: TrendingUp, color: 'text-emerald-600', bg: isDark ? 'bg-emerald-900/30' : 'bg-emerald-50' },
-              { label: 'Partner Mandis', value: mandis, suffix: '+', icon: Building2, color: 'text-amber-600', bg: isDark ? 'bg-amber-900/30' : 'bg-amber-50' },
+              { label: t('home.activeFarmers'), value: farmers, suffix: '+', icon: Users, color: 'text-blue-600', bg: isDark ? 'bg-blue-900/30' : 'bg-blue-50' },
+              { label: t('home.weeklyVolume'), value: volume, suffix: ` ${t('home.tons')}`, icon: TrendingUp, color: 'text-emerald-600', bg: isDark ? 'bg-emerald-900/30' : 'bg-emerald-50' },
+              { label: t('home.partnerMandis'), value: mandis, suffix: '+', icon: Building2, color: 'text-amber-600', bg: isDark ? 'bg-amber-900/30' : 'bg-amber-50' },
             ].map((stat, idx) => (
               <div key={idx} className={`rounded-2xl p-8 border shadow-sm hover:shadow-md transition-all ${
                 isDark 
@@ -351,10 +357,9 @@ export default function HomePage() {
       {/* About Section */}
       <section id="about" className="py-20 z-10 relative">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>About KisanSetu</h2>
+          <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>{t('home.aboutTitle')}</h2>
           <p className={`text-lg leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-            KisanSetu connects farmers and buyers with transparent pricing, real-time market insights, and
-            smarter supply chain decisions—helping growers earn more while delivering fresher produce.
+            {t('home.aboutDescription')}
           </p>
         </div>
       </section>
@@ -367,10 +372,10 @@ export default function HomePage() {
       >
         <div className="text-center mb-16">
           <h2 className={`text-4xl md:text-5xl font-bold mb-4 ${isDark ? 'text-slate-100' : 'text-gray-900'}`}>
-            Select Your Role
+            {t('home.selectRoleTitle')}
           </h2>
           <p className={`text-lg ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>
-            Choose your account type to get started
+            {t('home.selectRoleSubtitle')}
           </p>
         </div>
 
@@ -386,12 +391,12 @@ export default function HomePage() {
                 <Sprout className="w-16 h-16 text-white relative z-10" strokeWidth={1.5} />
               </div>
               <div className="p-8">
-                <h3 className={`text-2xl font-bold mb-3 ${isDark ? 'text-slate-100' : 'text-gray-900'}`}>Farmer Login</h3>
+                <h3 className={`text-2xl font-bold mb-3 ${isDark ? 'text-slate-100' : 'text-gray-900'}`}>{t('auth.farmersLogin')}</h3>
                 <p className={`mb-6 leading-relaxed ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>
-                  Access your farm profile and connect directly with markets
+                  {t('home.farmerCardDesc')}
                 </p>
                 <button className="w-full bg-linear-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300">
-                  Login as Farmer
+                  {t('auth.farmersLogin')}
                 </button>
               </div>
             </div>
@@ -407,12 +412,12 @@ export default function HomePage() {
                 <ShoppingCart className="w-16 h-16 text-white relative z-10" strokeWidth={1.5} />
               </div>
               <div className="p-8">
-                <h3 className={`text-2xl font-bold mb-3 ${isDark ? 'text-slate-100' : 'text-gray-900'}`}>Customer Login</h3>
+                <h3 className={`text-2xl font-bold mb-3 ${isDark ? 'text-slate-100' : 'text-gray-900'}`}>{t('auth.customerLogin')}</h3>
                 <p className={`mb-6 leading-relaxed ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>
-                  Browse and purchase fresh produce directly from farmers
+                  {t('home.customerCardDesc')}
                 </p>
                 <button className="w-full bg-linear-to-r from-teal-400 to-teal-600 hover:from-teal-500 hover:to-teal-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300">
-                  Login as Customer
+                  {t('auth.customerLogin')}
                 </button>
               </div>
             </div>
@@ -424,41 +429,41 @@ export default function HomePage() {
       <section id="features" className="py-24 z-10 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
            <div className="text-center mb-16">
-            <span className="text-emerald-600 font-semibold tracking-wider uppercase text-sm">Why Choose Us</span>
-            <h2 className={`mt-2 text-3xl md:text-4xl font-bold ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>Revolutionizing the Supply Chain</h2>
+            <span className="text-emerald-600 font-semibold tracking-wider uppercase text-sm">{t('home.whyChooseUs')}</span>
+            <h2 className={`mt-2 text-3xl md:text-4xl font-bold ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>{t('home.revolutionizingSupplyChain')}</h2>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               { 
                 icon: HeartHandshake, 
-                title: "Fair Trade Practices", 
-                desc: "We ensure every farmer gets their due worth through our transparent bidding system." 
+                title: t('home.features.fairTrade.title'), 
+                desc: t('home.features.fairTrade.desc')
               },
               { 
                 icon: Truck, 
-                title: "Smart Logistics", 
-                desc: "Integrated logistics support to get produce from farm to fork faster and fresher." 
+                title: t('home.features.smartLogistics.title'), 
+                desc: t('home.features.smartLogistics.desc')
               },
               { 
                 icon: Sun, 
-                title: "Weather Insights", 
-                desc: "Real-time weather data to help farmers plan their harvest and protect crops." 
+                title: t('home.features.weatherInsights.title'), 
+                desc: t('home.features.weatherInsights.desc')
               },
               { 
                 icon: Shield, 
-                title: "Secure Payments", 
-                desc: "Escrow-protected payments ensure safety for both buyers and sellers." 
+                title: t('home.features.securePayments.title'), 
+                desc: t('home.features.securePayments.desc')
               },
               { 
                 icon: TrendingUp, 
-                title: "Market Analysis", 
-                desc: "Data-driven insights on crop demand and pricing trends." 
+                title: t('home.features.marketAnalysis.title'), 
+                desc: t('home.features.marketAnalysis.desc')
               },
               { 
                 icon: Sprout, 
-                title: "Sustainable Growth", 
-                desc: "Promoting eco-friendly farming practices for a better tomorrow." 
+                title: t('home.features.sustainableGrowth.title'), 
+                desc: t('home.features.sustainableGrowth.desc')
               }
             ].map((feature, idx) => (
               <div key={idx} className={`flex gap-4 p-6 rounded-2xl hover:shadow-lg transition-all duration-300 border ${
@@ -495,7 +500,7 @@ export default function HomePage() {
                 <span className="text-2xl font-bold text-white">KisanSetu</span>
               </div>
               <p className={`max-w-sm leading-relaxed mb-6 ${isDark ? 'text-slate-400' : 'text-slate-400'}`}>
-                Bridging the gap between India's hardworking farmers and the modern marketplace. Technology for a greener, wealthier future.
+                {t('home.footer.bridging')}
               </p>
               <div className="flex gap-4">
                 {/* Social placeholders */}
@@ -510,22 +515,22 @@ export default function HomePage() {
             </div>
             
             <div>
-              <h4 className="text-white font-semibold text-lg mb-6">Platform</h4>
+              <h4 className="text-white font-semibold text-lg mb-6">{t('home.footer.platform')}</h4>
               <ul className="space-y-4">
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Find Produce</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Sell Crops</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Market Prices</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Logistics</a></li>
+                <li><a href="#" className="hover:text-emerald-400 transition-colors">{t('home.footer.findProduce')}</a></li>
+                <li><a href="#" className="hover:text-emerald-400 transition-colors">{t('home.footer.sellCrops')}</a></li>
+                <li><a href="#" className="hover:text-emerald-400 transition-colors">{t('home.footer.marketPrices')}</a></li>
+                <li><a href="#" className="hover:text-emerald-400 transition-colors">{t('home.footer.logistics')}</a></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="text-white font-semibold text-lg mb-6">Support</h4>
+              <h4 className="text-white font-semibold text-lg mb-6">{t('home.footer.support')}</h4>
               <ul className="space-y-4">
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Safety Guidelines</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-emerald-400 transition-colors">{t('home.footer.helpCenter')}</a></li>
+                <li><a href="#" className="hover:text-emerald-400 transition-colors">{t('home.footer.safetyGuidelines')}</a></li>
+                <li><a href="#" className="hover:text-emerald-400 transition-colors">{t('home.footer.termsOfService')}</a></li>
+                <li><a href="#" className="hover:text-emerald-400 transition-colors">{t('home.footer.privacyPolicy')}</a></li>
               </ul>
             </div>
           </div>
@@ -533,9 +538,9 @@ export default function HomePage() {
           <div className={`pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 ${
             isDark ? 'border-slate-800' : 'border-slate-800'
           }`}>
-            <p className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>© 2026 KisanSetu. All rights reserved.</p>
+            <p className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>{t('home.footer.copyright')}</p>
             <p className={`text-sm flex items-center gap-1 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
-              Made with <span className="text-red-500">♥</span> for Indian Agriculture
+              {t('home.footer.madeWith')} <span className="text-red-500">♥</span> {t('home.footer.forIndianAgriculture')}
             </p>
           </div>
         </div>
