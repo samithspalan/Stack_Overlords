@@ -9,6 +9,8 @@ export default function MyListings({ onBack, onNavigate }) {
   const [listings, setListings] = useState([])
   const [loading, setLoading] = useState(true)
   const [showCreateForm, setShowCreateForm] = useState(false)
+  const [marketAvgPrice, setMarketAvgPrice] = useState(null)
+  const [fetchingPrice, setFetchingPrice] = useState(false)
   const [formData, setFormData] = useState({
     commodity: '',
     variety: '',
@@ -22,6 +24,53 @@ export default function MyListings({ onBack, onNavigate }) {
   useEffect(() => {
     fetchListings()
   }, [])
+
+  // Fetch market average price when commodity changes
+  useEffect(() => {
+    const fetchMarketPrice = async () => {
+      if (!formData.commodity || formData.commodity.length < 3) {
+        setMarketAvgPrice(null)
+        return
+      }
+
+      setFetchingPrice(true)
+      try {
+        const response = await fetch(
+          `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=579b464db66ec23bdd00000168192898a7804f5c78598b8f95b641a1&format=json&filters[commodity]=${encodeURIComponent(formData.commodity)}&limit=50`
+        )
+        const data = await response.json()
+        
+        if (data.records && data.records.length > 0) {
+          const prices = data.records
+            .map(r => parseFloat(r.modal_price))
+            .filter(p => !isNaN(p) && p > 0)
+          
+          if (prices.length > 0) {
+            const avgPricePerQuintal = prices.reduce((a, b) => a + b, 0) / prices.length
+            // Convert from per quintal (100kg) to per kg
+            const avgPrice = Math.round(avgPricePerQuintal / 100)
+            setMarketAvgPrice(avgPrice)
+          } else {
+            setMarketAvgPrice(null)
+          }
+        } else {
+          setMarketAvgPrice(null)
+        }
+      } catch (error) {
+        console.error('Error fetching market price:', error)
+        setMarketAvgPrice(null)
+      } finally {
+        setFetchingPrice(false)
+      }
+    }
+
+    // Debounce the API call
+    const timer = setTimeout(() => {
+      fetchMarketPrice()
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [formData.commodity])
 
   const fetchListings = async () => {
     try {
@@ -258,6 +307,66 @@ export default function MyListings({ onBack, onNavigate }) {
                   isDark ? 'bg-slate-800 text-slate-100 border-slate-700' : 'bg-slate-50 text-slate-900 border-slate-300'
                 } border focus:ring-2 focus:ring-emerald-500 focus:border-transparent`}
               />
+              
+              {/* Market Average Price Info */}
+              {formData.commodity && (
+                <div className={`md:col-span-2 p-4 rounded-xl transition-colors ${
+                  isDark ? 'bg-slate-800/50' : 'bg-gradient-to-br from-emerald-50 to-teal-50'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className={`text-sm font-semibold mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                        📊 Current Market Average Price for {formData.commodity}
+                      </p>
+                      {fetchingPrice ? (
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+                          <p className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-600'}`}>
+                            Fetching live market data...
+                          </p>
+                        </div>
+                      ) : marketAvgPrice ? (
+                        <div>
+                          <p className={`text-3xl font-bold ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
+                            ₹{marketAvgPrice}
+                            <span className={`text-base font-normal ml-2 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                              per {formData.unit}
+                            </span>
+                          </p>
+                          {formData.expectedPrice && (
+                            <div className="mt-2">
+                              {parseFloat(formData.expectedPrice) < marketAvgPrice ? (
+                                <span className={`text-sm px-3 py-1 rounded-full font-semibold ${
+                                  isDark ? 'bg-green-900/30 text-green-400' : 'bg-green-100 text-green-700'
+                                }`}>
+                                  💰 Your price is {Math.round(((marketAvgPrice - parseFloat(formData.expectedPrice)) / marketAvgPrice) * 100)}% below market (Competitive!)
+                                </span>
+                              ) : parseFloat(formData.expectedPrice) > marketAvgPrice ? (
+                                <span className={`text-sm px-3 py-1 rounded-full font-semibold ${
+                                  isDark ? 'bg-amber-900/30 text-amber-400' : 'bg-amber-100 text-amber-700'
+                                }`}>
+                                  📈 Your price is {Math.round(((parseFloat(formData.expectedPrice) - marketAvgPrice) / marketAvgPrice) * 100)}% above market
+                                </span>
+                              ) : (
+                                <span className={`text-sm px-3 py-1 rounded-full font-semibold ${
+                                  isDark ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-100 text-blue-700'
+                                }`}>
+                                  ✅ Your price matches market average
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <p className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-600'}`}>
+                          No market data available for this commodity
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               <input
                 type="text"
                 placeholder="Location *"

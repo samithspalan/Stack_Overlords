@@ -69,13 +69,15 @@ export default function CustomerDashboard({ onNavigate, onLogout }) {
                 const apiData = await apiResponse.json()
                 
                 if (apiData.records && apiData.records.length > 0) {
-                  // Calculate average modal price from API data
+                  // Calculate average modal price from API data (API prices are per quintal/100kg)
                   const prices = apiData.records
                     .map(r => parseFloat(r.modal_price))
                     .filter(p => !isNaN(p) && p > 0)
                   
                   if (prices.length > 0) {
-                    marketPrices[commodity] = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length)
+                    const avgPricePerQuintal = prices.reduce((a, b) => a + b, 0) / prices.length
+                    // Convert from per quintal (100kg) to per kg
+                    marketPrices[commodity] = Math.round(avgPricePerQuintal / 100)
                   }
                 }
               } catch (error) {
