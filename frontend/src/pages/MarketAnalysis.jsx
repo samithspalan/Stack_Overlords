@@ -108,6 +108,11 @@ export default function MarketAnalysis({ onBack, onNavigate }) {
     })
 
     setCrops(processedCrops)
+    
+    // Auto-select first crop for analysis
+    if (processedCrops.length > 0 && !selectedCrop) {
+      fetchCropAnalysis(processedCrops[0].commodity)
+    }
   }
 
   const fetchCropAnalysis = async (commodity) => {

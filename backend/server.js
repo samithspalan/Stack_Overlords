@@ -369,14 +369,22 @@ io.on('connection', (socket) => {
 
   // User joins - register their socket
   socket.on('join', (userId) => {
-    activeUsers.set(userId, socket.id);
+    activeUsers.set(userId.toString(), socket.id);
     console.log(`User ${userId} joined with socket ${socket.id}`);
+    console.log('Active users:', Array.from(activeUsers.keys()));
   });
 
   // Send message
   socket.on('send_message', async (data) => {
     const { senderId, receiverId, message, listingId } = data;
     const conversationId = [senderId, receiverId].sort().join('_');
+
+    console.log('=====================================')
+    console.log('📨 MESSAGE RECEIVED ON BACKEND')
+    console.log('  senderId:', senderId)
+    console.log('  receiverId:', receiverId)
+    console.log('  message:', message)
+    console.log('  conversationId:', conversationId)
 
     try {
       // Save to database
@@ -388,33 +396,41 @@ io.on('connection', (socket) => {
         message
       });
 
+      console.log('💾 Saving message to DB...')
       await newMessage.save();
+      console.log('✅ Message saved to DB:', newMessage._id)
+      
+      console.log('📝 Populating sender info...')
       await newMessage.populate('senderId', 'Username email');
+      console.log('📝 Populating receiver info...')
       await newMessage.populate('receiverId', 'Username email');
+      console.log('✅ Message fully populated:', newMessage)
 
       // Send to recipient if online
-      const recipientSocket = activeUsers.get(receiverId);
+      const recipientSocket = activeUsers.get(receiverId.toString());
+      console.log('🔍 Looking for recipient:', receiverId.toString())
+      console.log('📊 Active users:', Array.from(activeUsers.keys()))
+      
       if (recipientSocket) {
-        io.to(recipientSocket).emit('receive_message', {
-          _id: newMessage._id,
-          senderId: newMessage.senderId,
-          receiverId: newMessage.receiverId,
-          message: newMessage.message,
-          createdAt: newMessage.createdAt
-        });
+        console.log('✅ Recipient found! Socket:', recipientSocket)
+        io.to(recipientSocket).emit('receive_message', newMessage);
+        io.to(recipientSocket).emit('conversation_updated');
+        console.log(`✅ Message sent to recipient ${receiverId}`);
+      } else {
+        console.log(`⚠️ Recipient ${receiverId} is offline or not found`);
       }
 
-      // Confirm to sender
-      socket.emit('message_sent', {
-        _id: newMessage._id,
-        senderId: newMessage.senderId,
-        receiverId: newMessage.receiverId,
-        message: newMessage.message,
-        createdAt: newMessage.createdAt
-      });
+      // Confirm to sender and signal conversation update
+      socket.emit('message_sent', newMessage);
+      socket.emit('conversation_updated');
+      console.log(`✅ Message confirmation sent to sender ${senderId}`);
+      console.log('=====================================')
     } catch (error) {
-      console.error('Error saving message:', error);
+      console.error('❌ ERROR SAVING MESSAGE:')
+      console.error('  Message:', error.message)
+      console.error('  Stack:', error.stack)
       socket.emit('message_error', { error: error.message });
+      console.log('=====================================')
     }
   });
 
@@ -424,6 +440,7 @@ io.on('connection', (socket) => {
       if (socketId === socket.id) {
         activeUsers.delete(userId);
         console.log(`User ${userId} disconnected`);
+        console.log('Active users:', Array.from(activeUsers.keys()));
         break;
       }
     }

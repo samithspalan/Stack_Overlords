@@ -45,7 +45,17 @@ export const authService = {
         return error;
       }
       
-      return await response.json();
+      const result = await response.json();
+      
+      // Save user data to localStorage
+      if (result.user) {
+        localStorage.setItem('userId', result.user._id)
+        localStorage.setItem('userName', result.user.Username)
+        localStorage.setItem('userEmail', result.user.email)
+        console.log('[AUTH] Farmer signup - saved user to localStorage:', result.user._id)
+      }
+      
+      return result;
     } catch (error) {
       console.error('Signup error:', error);
       return {
@@ -72,6 +82,7 @@ export const authService = {
    */
   customerSignup: async (username, email, password) => {
     try {
+      console.log('[AUTH] Customer signup request:', { username, email })
       const response = await fetch(`${API_BASE}/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -79,16 +90,30 @@ export const authService = {
         body: JSON.stringify({ Username: username, email, password })
       });
       
+      console.log('[AUTH] Response status:', response.status)
+      
       if (!response.ok) {
         const error = await response.json();
+        console.log('[AUTH] Error response:', error)
         return error;
       }
       
-      return await response.json();
+      const result = await response.json();
+      console.log('[AUTH] Success response:', result)
+      
+      // Save user data to localStorage
+      if (result.user) {
+        localStorage.setItem('userId', result.user._id)
+        localStorage.setItem('userName', result.user.Username)
+        localStorage.setItem('userEmail', result.user.email)
+        console.log('[AUTH] Saved user to localStorage:', result.user._id)
+      }
+      
+      return result;
     } catch (error) {
-      console.error('Signup error:', error);
+      console.error('[AUTH] Signup error:', error);
       return {
-        message: error.message || 'Failed to connect to server. Please make sure the backend is running on port 5000.'
+        message: error.message || 'Failed to connect to server. Please make sure the backend is running on port 8000.'
       };
     }
   },
@@ -108,6 +133,7 @@ export const authService = {
    */
   farmerLogin: async (email, password) => {
     try {
+      console.log('[AUTH] Farmer login request:', { email })
       const response = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -120,7 +146,18 @@ export const authService = {
         return error;
       }
       
-      return await response.json();
+      const result = await response.json();
+      console.log('[AUTH] Farmer login response:', result)
+      
+      // Save user data to localStorage
+      if (result.user) {
+        localStorage.setItem('userId', result.user._id)
+        localStorage.setItem('userName', result.user.Username)
+        localStorage.setItem('userEmail', result.user.email)
+        console.log('[AUTH] Farmer login - saved to localStorage:', result.user._id)
+      }
+      
+      return result;
     } catch (error) {
       console.error('Login error:', error);
       return {
@@ -144,6 +181,7 @@ export const authService = {
    */
   customerLogin: async (email, password) => {
     try {
+      console.log('[AUTH] Customer login request:', { email })
       const response = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -156,7 +194,18 @@ export const authService = {
         return error;
       }
       
-      return await response.json();
+      const result = await response.json();
+      console.log('[AUTH] Customer login response:', result)
+      
+      // Save user data to localStorage
+      if (result.user) {
+        localStorage.setItem('userId', result.user._id)
+        localStorage.setItem('userName', result.user.Username)
+        localStorage.setItem('userEmail', result.user.email)
+        console.log('[AUTH] Customer login - saved to localStorage:', result.user._id)
+      }
+      
+      return result;
     } catch (error) {
       console.error('Login error:', error);
       return {

@@ -38,6 +38,7 @@ router.get('/conversation/:otherUserId', isAuthenticated, async (req, res) => {
 router.get('/conversations', isAuthenticated, async (req, res) => {
   try {
     const userId = req.userID;
+    console.log(`\n🔍 [CONVERSATIONS] Fetching conversations for user: ${userId}`)
 
     const messages = await Message.find({
       $or: [{ senderId: userId }, { receiverId: userId }]
@@ -46,21 +47,29 @@ router.get('/conversations', isAuthenticated, async (req, res) => {
       .populate('receiverId', 'Username email')
       .sort({ createdAt: -1 });
 
+    console.log(`📊 [CONVERSATIONS] Found ${messages.length} messages for this user`)
+
     // Group by conversation
     const conversations = {};
     messages.forEach(msg => {
       const otherUser = msg.senderId._id.toString() === userId ? msg.receiverId : msg.senderId;
-      const key = otherUser._id;
+      const key = otherUser._id.toString();
       if (!conversations[key]) {
         conversations[key] = {
-          userId: otherUser._id,
-          Username: otherUser.Username,
-          email: otherUser.email,
-          lastMessage: msg.message,
-          lastMessageTime: msg.createdAt
+          otherUser: {
+            _id: otherUser._id,
+            Username: otherUser.Username,
+            email: otherUser.email
+          },
+          lastMessage: {
+            message: msg.message,
+            createdAt: msg.createdAt
+          }
         };
       }
     });
+
+    console.log(`✅ [CONVERSATIONS] Returning ${Object.keys(conversations).length} unique conversations`)
 
     res.json({
       success: true,

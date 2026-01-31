@@ -48,13 +48,17 @@ export default function FarmerLogin({ onNavigate, onLoginSuccess }) {
     setError('')
     
     try {
+      console.log('[FARMER LOGIN] Starting login...')
       const result = await authService.farmerLogin(email, password)
+      console.log('[FARMER LOGIN] Result:', result)
       
       if (result.user) {
-        console.log('Login Success:', result.user)
+        console.log('[FARMER LOGIN] Login Success:', result.user)
         // Store userId in localStorage for messaging
         localStorage.setItem('userId', result.user._id)
         localStorage.setItem('userName', result.user.Username)
+        localStorage.setItem('userEmail', result.user.email)
+        console.log('[FARMER LOGIN] Saved to localStorage - userId:', localStorage.getItem('userId'))
         // Clear form
         setEmail('')
         setPassword('')

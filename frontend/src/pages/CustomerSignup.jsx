@@ -9,7 +9,6 @@ export default function CustomerSignup({ onNavigate, onSignupSuccess }) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [agreed, setAgreed] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -18,48 +17,50 @@ export default function CustomerSignup({ onNavigate, onSignupSuccess }) {
 
   const handleSignup = async (e) => {
     e.preventDefault()
+    console.log('[SIGNUP] Starting signup process')
     
-    if (!name || !email || !password || !confirmPassword) {
+    if (!name || !email || !password) {
       setError('Please fill all fields')
-      return
-    }
-    
-    if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      console.log('[SIGNUP] Missing fields:', { name, email, password })
       return
     }
 
     if (password.length < 6) {
       setError('Password must be at least 6 characters long')
+      console.log('[SIGNUP] Password too short')
       return
     }
     
     if (!agreed) {
       setError('Please agree to the Terms of Service')
+      console.log('[SIGNUP] Not agreed to terms')
       return
     }
     
     setLoading(true)
     setError('')
     
+    console.log('[SIGNUP] Sending request with:', { name, email })
     try {
       const result = await authService.customerSignup(name, email, password)
+      console.log('[SIGNUP] Response:', result)
       
       if (result.user) {
+        console.log('[SIGNUP] Success! User:', result.user)
         setSuccessMessage('Signup successful! Redirecting to dashboard...')
         setName('')
         setEmail('')
         setPassword('')
-        setConfirmPassword('')
         setAgreed(false)
         setTimeout(() => {
           onSignupSuccess ? onSignupSuccess('customer') : onNavigate('customer-dashboard')
         }, 1000)
       } else {
+        console.log('[SIGNUP] Failed:', result.message)
         setError(result.message || 'Signup failed')
       }
     } catch (error) {
-      console.error('Signup error:', error)
+      console.error('[SIGNUP] Catch error:', error)
       setError(error.message || 'An error occurred during signup')
     } finally {
       setLoading(false)

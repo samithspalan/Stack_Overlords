@@ -44,12 +44,14 @@ export default function ChatsPage({ onBack, onNavigate, userType = 'farmer' }) {
         console.log('Received message:', message)
         setMessages(prev => [...prev, message])
         // Refresh conversations list when receiving new message
-        fetchConversations()
+        setTimeout(() => fetchConversations(), 100)
       })
 
       socketRef.current.on('message_sent', (message) => {
         console.log('Message sent:', message)
         setMessages(prev => [...prev, message])
+        // Refresh conversations list after sending
+        setTimeout(() => fetchConversations(), 100)
       })
 
       socketRef.current.on('message_error', (error) => {

@@ -10,7 +10,7 @@ import FarmerLogin from './pages/FarmerLogin'
 import CustomerLogin from './pages/CustomerLogin'
 import FarmerSignup from './pages/FarmerSignup'
 import CustomerSignup from './pages/CustomerSignup'
-import ChatsPage from './pages/ChatsPage'
+import FarmersChatsPage from './pages/FarmersChatsPage'
 import CustomerChatsPage from './pages/CustomerChatsPage'
 import MyListings from './pages/MyListings'
 
@@ -32,6 +32,12 @@ function App() {
           console.log('User authenticated:', response.user)
           setIsAuthenticated(true)
           
+          // Save user data to localStorage for messaging
+          localStorage.setItem('userId', response.user._id)
+          localStorage.setItem('userName', response.user.Username)
+          localStorage.setItem('userEmail', response.user.email)
+          console.log('[AUTH] Saved userId to localStorage:', response.user._id)
+          
           // Get userType from localStorage
           const storedUserType = localStorage.getItem('userType')
           if (storedUserType) {
@@ -47,12 +53,18 @@ function App() {
           setIsAuthenticated(false)
           setUserType(null)
           localStorage.removeItem('userType')
+          localStorage.removeItem('userId')
+          localStorage.removeItem('userName')
+          localStorage.removeItem('userEmail')
         }
       } catch (error) {
         console.error('Auth check error:', error)
         setIsAuthenticated(false)
         setUserType(null)
         localStorage.removeItem('userType')
+        localStorage.removeItem('userId')
+        localStorage.removeItem('userName')
+        localStorage.removeItem('userEmail')
       } finally {
         setLoading(false)
       }
@@ -165,7 +177,7 @@ function App() {
             userType === 'customer' ? (
               <CustomerChatsPage onBack={() => handleNavigate('customer-dashboard')} onNavigate={handleNavigate} />
             ) : (
-              <ChatsPage onBack={() => handleNavigate('farmer-dashboard')} onNavigate={handleNavigate} userType={userType} />
+              <FarmersChatsPage onBack={() => handleNavigate('farmer-dashboard')} onNavigate={handleNavigate} />
             )
           ) : (
             <HomePage />
