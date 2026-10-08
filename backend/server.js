@@ -17,10 +17,15 @@ dotenv.config();
 
 const app = express();
 const httpServer = createServer(app);
-const allowedOrigins = (process.env.FRONTEND_ORIGIN || 'http://localhost:5173,https://stack-overlords.onrender.com')
+const envOrigins = (process.env.FRONTEND_ORIGIN || 'http://localhost:5173,https://stack-overlords.onrender.com')
     .split(',')
-    .map(origin => origin.trim())
+    .map(origin => origin.trim().replace(/^['"]|['"]$/g, ''))
     .filter(Boolean)
+
+const allowedOrigins = Array.from(new Set([
+    ...envOrigins,
+    ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:5173'] : [])
+]))
 
 const io = new Server(httpServer, {
   cors: {

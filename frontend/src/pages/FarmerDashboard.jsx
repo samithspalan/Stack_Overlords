@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import LanguageToggle from '../components/LanguageToggle'
 import farmerBg from '../assets/farmerdashboard.png'
 import { API_BASE } from '../config/api'
+import FarmerLoader from '../components/FarmerLoader'
 
 export default function FarmerDashboard({ onNavigate }) {
   const { isDark, toggleTheme } = useTheme()
@@ -669,13 +670,7 @@ export default function FarmerDashboard({ onNavigate }) {
             {/* Cards Grid - 3 Column Layout */}
             <div className="h-200 overflow-y-auto pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-emerald-200 hover:scrollbar-thumb-emerald-300 transition-colors">
             {loading ? (
-                <div className="py-32 text-center">
-                    <div className="relative w-16 h-16 mx-auto mb-6">
-                       <div className="absolute inset-0 border-4 border-emerald-100 rounded-full"></div>
-                       <div className="absolute inset-0 border-4 border-emerald-500 rounded-full border-t-transparent animate-spin"></div>
-                    </div>
-                    <p className="text-slate-500 font-bold animate-pulse tracking-wide">Fetching latest market rates...</p>
-                </div>
+                <FarmerLoader message="Fetching latest market rates..." />
             ) : activeCommodity ? (
               /* Detail View for a Specific Commodity */
               <div className="animate-in fade-in duration-500">

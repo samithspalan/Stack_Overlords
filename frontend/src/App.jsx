@@ -13,6 +13,7 @@ import CustomerSignup from './pages/CustomerSignup'
 import FarmersChatsPage from './pages/FarmersChatsPage'
 import CustomerChatsPage from './pages/CustomerChatsPage'
 import MyListings from './pages/MyListings'
+import FarmerLoader from './components/FarmerLoader'
 
 function App() {
   const [currentPage, setCurrentPage] = useState(window.location.hash.slice(1) || 'home')
@@ -23,28 +24,26 @@ function App() {
   // Check if user is authenticated on mount
   useEffect(() => {
     const checkAuth = async () => {
+      // Run auth check and 3-second timer in parallel
+      const [response] = await Promise.all([
+        authService.getCurrentUser().catch(() => null),
+        new Promise(resolve => setTimeout(resolve, 3000))
+      ])
+
       try {
-        const response = await authService.getCurrentUser()
-        console.log('Auth check response:', response)
-        
-        // Check if response has user data (successful auth)
         if (response && response.user) {
           console.log('User authenticated:', response.user)
           setIsAuthenticated(true)
           
-          // Save user data to localStorage for messaging
           localStorage.setItem('userId', response.user._id)
           localStorage.setItem('userName', response.user.Username)
           localStorage.setItem('userEmail', response.user.email)
           console.log('[AUTH] Saved userId to localStorage:', response.user._id)
           
-          // Get userType from localStorage
           const storedUserType = localStorage.getItem('userType')
           if (storedUserType) {
             console.log('Setting userType:', storedUserType)
             setUserType(storedUserType)
-            // Respect explicit hash routes (for example login/signup),
-            // only auto-redirect when no route is specified.
             const currentHash = window.location.hash.slice(1)
             if (!currentHash) {
               const dashboard = storedUserType === 'customer' ? 'customer-dashboard' : 'farmer-dashboard'
@@ -149,7 +148,7 @@ function App() {
     return (
       <ThemeProvider>
         <div className="min-h-screen flex items-center justify-center bg-white">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600"></div>
+          <FarmerLoader message="Welcome to KisanSetu..." />
         </div>
       </ThemeProvider>
     )

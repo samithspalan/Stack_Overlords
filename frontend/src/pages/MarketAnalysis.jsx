@@ -4,6 +4,7 @@ import { ArrowLeft, TrendingUp, TrendingDown, Search, Zap, Leaf, Filter, AlertCi
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts'
 import { useTheme } from '../context/ThemeContext'
 import { API_BASE } from '../config/api'
+import FarmerLoader from '../components/FarmerLoader'
 
 export default function MarketAnalysis({ onBack, onNavigate }) {
   const { isDark, toggleTheme } = useTheme()
@@ -429,7 +430,9 @@ export default function MarketAnalysis({ onBack, onNavigate }) {
 
             <div className={`divide-y ${isDark ? 'divide-slate-700' : ''}`}>
               {loading ? (
-                <div className={`p-8 text-center ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Loading crops...</div>
+                <div className="py-4">
+                  <FarmerLoader message="Loading market data..." />
+                </div>
               ) : filteredCrops.length === 0 ? (
                 <div className={`p-8 text-center ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>No crops found</div>
               ) : (
@@ -489,14 +492,10 @@ export default function MarketAnalysis({ onBack, onNavigate }) {
               <p className={isDark ? 'text-slate-500' : 'text-slate-400'}>Choose from the list on the left to see price trends and market data</p>
             </div>
           ) : analysisLoading ? (
-            <div className={`rounded-2xl shadow-lg p-12 text-center transition-colors ${
-              isDark ? 'bg-slate-800' : 'bg-white'
+            <div className={`rounded-2xl shadow-lg border transition-colors ${
+              isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100'
             }`}>
-              <div className="inline-block relative w-12 h-12 mb-4">
-                <div className={`absolute inset-0 border-4 rounded-full ${isDark ? 'border-slate-600' : 'border-green-100'}`}></div>
-                <div className={`absolute inset-0 border-4 rounded-full border-t-transparent animate-spin ${isDark ? 'border-emerald-400' : 'border-green-500'}`}></div>
-              </div>
-              <p className={`font-semibold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Analyzing {selectedCrop}...</p>
+              <FarmerLoader message={`Analyzing market trends for ${selectedCrop}...`} />
             </div>
           ) : (
             <div className="space-y-6">
