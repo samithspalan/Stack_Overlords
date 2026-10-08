@@ -10,12 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@lottiefiles/react-lottie-player": "^3.6.0",
     "@tailwindcss/postcss": "^4.1.18",
     "axios": "^1.13.4",
     "chart.js": "^4.5.1",
     "i18next": "^25.8.0",
     "leaflet": "^1.9.4",
-    "lottie-web": "^5.13.0",
     "lucide-react": "^0.563.0",
     "react": "^19.2.0",
     "react-chartjs-2": "^5.3.1",

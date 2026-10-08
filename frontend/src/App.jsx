@@ -147,7 +147,7 @@ function App() {
   if (loading) {
     return (
       <ThemeProvider>
-        <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="min-h-screen flex items-center justify-center bg-green-50">
           <FarmerLoader message="Welcome to KisanSetu..." />
         </div>
       </ThemeProvider>
